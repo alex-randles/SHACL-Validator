@@ -1,11 +1,13 @@
+import json
 import os
 import random
 import string
-
+import urllib.parse
 from flask import Flask, render_template, request, flash, redirect, session
 from werkzeug.utils import secure_filename
 import morph_kgc
 import rdflib
+import pyshacl
 
 
 # definition of web application
@@ -33,7 +35,10 @@ def index():
         if not os.path.exists(app.config['UPLOAD_FOLDER']):
             os.makedirs(app.config['UPLOAD_FOLDER'])
         # returns the initial view displayed
-        return render_template("index.html")
+        return render_template(
+            "index.html",
+            open=open,
+        )
     else:
         # if session.get("uid") is None:
         #     uid = ''.join(random.choices(string.ascii_lowercase, k=10))
@@ -134,6 +139,51 @@ def compare_mapping_sources(mapping_filename, uploaded_sources):
     except Exception as e:
         return file_error_message
 
+
+def load_rdflib_graph(rdf_string):
+    try:
+        graph = rdflib.Graph().parse(data=rdf_string, format="ttl")
+        return graph
+    except Exception as e:
+        print(f"Exception loading graph: {e}")
+        return None
+
+
+@app.route('/execute-shacl-shape', methods=["GET", "POST"])
+def execute_shacl_shape():
+    if request.method == "POST":
+        form_data = {value.split("=")[0]: urllib.parse.unquote(value.split("=")[1]) for value in
+                     request.form.get("data").split("&") if urllib.parse.unquote(value.split("=")[1]) != 'None'}
+        # form_data = request.form.get("data")
+        data_graph_text = form_data.get("data-graph-text")
+        shacl_graph_text = form_data.get("shacl-graph-text")
+        shacl_graph, data_graph = None, None
+        if data_graph_text:
+            data_graph = load_rdflib_graph(data_graph_text)
+            if not data_graph:
+                return {"error_message": "Data Graph could not be parsed!"}
+        if shacl_graph_text:
+            shacl_graph = load_rdflib_graph(shacl_graph_text)
+            if not shacl_graph:
+                return {"error_message": "SHACL Graph could not be parsed!"}
+
+        if shacl_graph and data_graph:
+            shacl_results = pyshacl.validate(data_graph, shacl_graph=shacl_graph)
+            conforms, results_graph, results_text = shacl_results
+            results_graph = results_graph.serialize(format="ttl")
+            results = {
+                "conforms": conforms,
+                "results_text": results_text,
+                "results_graph": results_graph,
+            }
+            return results
+        print(data_graph_text)
+
+        # print(form_data)
+        exit()
+        # for k, v in form_data.items():
+        #     print(k,v)
+        return "whshs"
 
 # run the uploaded mapping
 def execute_mapping(mapping_filename):

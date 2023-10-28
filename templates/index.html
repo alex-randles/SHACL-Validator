@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='homepage_favicon.ico') }}">
 </head>
 <body>
@@ -16,7 +17,7 @@
         <h1 class="text-center text-dark mt-2">SHACL Validator</h1>
     </div>
     <div class="row text-center mt-3">
-        <p class="text-muted">Start Generating RDF Data by uploading an RML Mapping and associated Source Data</p>
+        <p class="text-muted">Start Validating RDF Data by uploading associated SHACL Shapes</p>
     </div>
 
     <!--    <form class="text-center my-1" action="{{ url_for('index') }}" id="mapping-form" method="POST" enctype="multipart/form-data" >-->
@@ -54,17 +55,27 @@
                 <div class="card text-dark mb-3">
                     <div class="card-header h5">RDF Graph</div>
                     <div class="card-body">
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <p class="card-text">Please upload a Graph using only <strong>one</strong> of the options below.</p>
                         <div class="input-group mb-3 w-75">
-                            <input class="form-control" type="file" name="data-graph-file" id="data-graph-file" accept=".csv, .xlsx, .json, .xml" multiple>
+                            <input class="form-control" type="file" name="data-graph-file" id="data-graph-file" accept=".ttl">
+                            <span class="input-group-text">
+                            <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle"></i>
+                        </span>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Graph URI</span>
                             <input type="url" class="form-control" id="data-graph-uri" placeholder="Enter URI to Graph" aria-label="Username" aria-describedby="basic-addon1">
+                            <span class="input-group-text">
+                              <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle"></i>
+                          </span>
                         </div>
+                        <span class="float-start">
+                            <label for="data-graph-text" class="form-label">Paste RDF Data</label>
+                            <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle ms-2"></i>
+                        </span>
+                        <button type="button" class="btn btn-sm btn-secondary float-end mb-2 add-sample-graph">Add Sample Graph</button>
 
-                        <label for="data-graph-file" class="form-label float-start">Paste RDF Data</label>
-                        <textarea class="form-control" id="data-graph-text" rows="18"></textarea>
+                        <textarea class="form-control" name="data-graph-text" id="data-graph-text" rows="18"></textarea>
 
                     </div>
                 </div>
@@ -74,31 +85,41 @@
                 <div class="card text-dark mb-3">
                     <div class="card-header h5">SHACL Graph</div>
                     <div class="card-body">
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <p class="card-text">Please upload a Graph using only <strong>one</strong> of the options below.</p>
                         <div class="input-group mb-3 w-75">
-                            <input class="form-control" type="file" name="shacl-graph-file" id="shacl-graph-file" accept=".csv, .xlsx, .json, .xml" multiple>
+                            <input class="form-control" type="file" name="shacl-graph-file" id="shacl-graph-file" accept=".ttl">
+                            <span class="input-group-text">
+                            <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle"></i>
+                        </span>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text">Graph URI</span>
                             <input type="url" class="form-control" placeholder="Enter URI to Graph" id="shacl-graph-uri" aria-label="Username" aria-describedby="basic-addon1">
+                            <span class="input-group-text">
+                            <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle"></i>
+                        </span>
                         </div>
 
-                        <label for="shacl-graph-text" class="form-label float-start">Paste RDF Data</label>
-                        <textarea class="form-control" id="shacl-graph-text" rows="18"></textarea>
+                        <span class="float-start">
+                            <label for="shacl-graph-text" class="form-label">Paste RDF Data</label>
+                            <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle ms-2"></i>
+                        </span>
+                        <button type="button" class="btn btn-sm btn-secondary mb-2 float-end add-sample-graph">Add Sample Graph</button>
+                        <textarea class="form-control mt-1" name="shacl-graph-text" id="shacl-graph-text" rows="18"></textarea>
 
                     </div>
                 </div>
             </div>
         </div>
 
-    <div class="row my-4">
-        <div class="col-12 text-center">
-            <button type="reset" class="btn btn-secondary btn-sm float-start">Clear Uploads</button>
-            <button type="submit" id="submit-button" class="btn btn-primary spinner-button">Execute</button>
+        <div class="row my-4">
+            <div class="col-12 text-center">
+                <button type="reset" class="btn btn-secondary btn-sm float-start">Clear Uploads</button>
+                <button type="submit" id="submit-button" class="btn btn-primary spinner-button">Execute</button>
+            </div>
         </div>
-    </div>
 
-            </form>
+    </form>
 
 
     <!--display debugging information depending on error detected by Morph-KGC-->
@@ -123,12 +144,42 @@
 
 </div>
 
+<div class="modal fade" id="modal" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" id="modal-dialog">
+        <div class="modal-content" id="success-modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="modal-title">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 </body>
 </html>
 
+
+<script>
+    function showErrorMessage(error_message){
+         $("#modal-title").addClass("text-danger").removeClass("text-success").text("Error");
+         $("#modal-body").html(error_message);
+         $("#modal").modal("show");
+    }
+    function showSuccessMessage(success_message){
+         $("#modal-title").addClass("text-success").removeClass("text-danger").text("Success");
+         $("#modal-body").html(success_message);
+         $("#modal").modal("show");
+    }
+</script>
 <script>
     // turn button into spinner when pressed
-    $(document.body).on('click', '.spinner-button' ,function(e){
+    $(document.body).on('click', '.spinner-buttonsssssss' ,function(e){
           $(this).css("pointer-events", "none");
           $(this).text("");
           $(this).attr("class", "spinner-border");
@@ -138,4 +189,84 @@
     $('.clear-buttonsssss').click(function(){
        $('#mapping-form')[0].reset();
     });
+
+    $('.add-sample-graph').click(function(){
+       var parent_text_area = $(this).parent().find("textarea");
+       var text_area_name = $(this).parent().find("textarea").attr("name");
+       if (text_area_name == "shacl-graph-text") {
+           var file_contents  = `{{open("sample_shacl_graph.ttl", "r+").read() | safe}}`;
+       } else {
+           var file_contents  = `{{open("sample_data_graph.ttl", "r+").read() | safe}}`;
+       }
+       // alert(file_contents);
+       parent_text_area.val(file_contents);
+    });
+</script>
+<script>
+    function validateUploadForm(){
+        var valid_form = false;
+        $("#upload-form input,textarea").each(function() {
+            var current_value = $(this).val();
+            if (current_value.trim() != ""){
+               valid_form = true;
+            }
+        });
+        return valid_form;
+    }
+</script>
+<script>
+    $(document).on('submit','#upload-form',function(e) {
+        e.preventDefault();
+        // showErrorMessage("hehee");
+        var valid_form = validateUploadForm();
+        if (!valid_form) {
+           // showErrorMessage("Please upload both graphs!");
+           // return false;
+        }
+        $.ajax({
+            type:'POST',
+            url:'{{ url_for("execute_shacl_shape") }}',
+            data:{
+                data: $('#upload-form').serialize(),
+            },
+            success:function(response)
+            {
+               $("#download-button").remove();
+               error_message = response["error_message"];
+               if (error_message) {
+                  var error_message_html = `${error_message} </br> </br> Turtle RDF can be validated at the following <a href="http://ttl.summerofcode.be/" target="_blank">Link</a>`;
+                  showErrorMessage(error_message_html);
+                  return false;
+               }
+               var shacl_conformance = response["conforms"];
+               var shacl_result_text = response["results_text"];
+               var shacl_result_graph = response["results_graph"];
+               if (shacl_conformance == false) {
+                   var shacl_results_html = `
+                    <p>The Graph generated <strong>Failed SHACL Validation</strong>. The following SHACL Validation Report was generated:</p>
+                    <pre class="py-2 alert alert-danger">${shacl_result_text}</pre>
+                  `;
+                   $("#modal-dialog").addClass("modal-xl");
+                   var download_button = '<a id="download-button" class="btn btn-sm btn-primary ms-3 mb-3 w-25">Download Report (.ttl)</a>';
+                   $("#modal-body").after(download_button);
+                   var download_button = $("#download-button");
+                   var filename = "shacl_report.ttl";
+                   var download_data = 'data:text/plain;charset=utf-8,' + encodeURIComponent(shacl_result_graph);
+                   $(download_button).attr({
+                              'download': filename,
+                              'href': download_data,
+                              'target': '_blank'
+                   });
+                   showErrorMessage(shacl_results_html);
+               } else {
+                   showSuccessMessage("SHACL Validation Passed!");
+               }
+            }
+       })
+    });
+</script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 </script>
