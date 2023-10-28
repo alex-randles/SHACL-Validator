@@ -170,7 +170,7 @@ def execute_shacl_shape():
                 return {"error_message": "SHACL Graph could not be parsed!"}
 
         data_graph_file = request.files.get('data-graph-file')
-        if data_graph_file:
+        if data_graph_file != "undefined":
             print(data_graph_file)
             # if data_graph_file.filename not in [".xml", ".ttl", ".json"]:
             #     return {"error_message": "Data Graph File must be Turtle (.ttl)"}

@@ -225,20 +225,29 @@
                valid_form = true;
             }
         });
-        var shacl_count = 0;
-        $("#shacl-content input, #shacl-content textarea").not(':input[type=submit]').each(function() {
-            var current_value = $(this).val();
-            if (current_value.trim() != ""){
-               shacl_count = shacl_count + 1;
-               alert(current_value);
+        var div_id = ["shacl-content", "data-content"];
+        for (current_id in div_id) {
+        alert("shsdh");
+            var shacl_count = 0;
+            alert(current_id);
+            $(`#${current_id} input, #shacl-content textarea`).not(':input[type=submit]').each(function() {
+                var current_value = $(this).val();
+                if (current_value.trim() != ""){
+                   shacl_count = shacl_count + 1;
+                   alert(current_value);
+                }
+            });
+            if (shacl_count > 1) {
+                valid_form = false;
+                showErrorMessage("Please provide only one source for SHACL Shapes");
             }
-        });
-        if (shacl_count > 1) {
-            valid_form = false;
-            showErrorMessage("Please provide only one source for SHACL Shapes");
-        }
-        if (!valid_form) {
-           return valid_form;
+            if (shacl_count == 0) {
+                valid_form = false;
+                showErrorMessage("No SHACL shapes uploaded!");
+            }
+            if (!valid_form) {
+               return valid_form;
+            }
         }
         return valid_form;
     }
