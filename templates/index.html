@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SHACL Validator - Home</title>
+    <!--    import bootstrap and jQuery -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='homepage_favicon.ico') }}">
+</head>
+<body>
+<!--container for upload form fields -->
+<div class="container-fluid">
+    <div class="row" style="background-color:#F8F8F8;">
+        <h1 class="text-center text-dark mt-2">SHACL Validator</h1>
+    </div>
+    <div class="row text-center mt-3">
+        <p class="text-muted">Start Generating RDF Data by uploading an RML Mapping and associated Source Data</p>
+    </div>
+
+    <!--    <form class="text-center my-1" action="{{ url_for('index') }}" id="mapping-form" method="POST" enctype="multipart/form-data" >-->
+    <!--        <div class="row">-->
+    <!--            <div class="form-group">-->
+    <!--                <div class="input-group mb-3 w-75 mx-auto">-->
+    <!--                    <div class="input-group-prepend">-->
+    <!--                        <span class="input-group-text btn btn-secondary">Data Graph (RDF)</span>-->
+    <!--                    </div>-->
+    <!--                    <input class="form-control" type="file" name="mapping-file" id="mapping-file" accept=".ttl">-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--            <div class="form-group">-->
+    <!--                <div class="input-group mb-3 w-75 mx-auto">-->
+    <!--                    <div class="input-group-prepend">-->
+    <!--                        <span class="input-group-text btn btn-secondary">SHACL Shapes (RDF)</span>-->
+    <!--                    </div>-->
+    <!--                    <input class="form-control" type="file" name="source-data" id="source-data" accept=".csv, .xlsx, .json, .xml" multiple>-->
+    <!--                    <div class="input-group-append">-->
+    <!--                        Type Graph-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--        <div class="row my-4">-->
+    <!--            <div class="col-12">-->
+    <!--                <button type="button" class="btn btn-secondary btn-sm float-start clear-button" style="margin-left:12.2%;">Clear Graphs</button>-->
+    <!--                <button type="submit" id="submit-button" class="btn btn-primary spinner-button" style="margin-right:18%;">Execute</button>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--</form>-->
+    <form class="text-center my-1" action="{{ url_for('index') }}" id="upload-form" method="POST" enctype="multipart/form-data" >
+        <div class="row">
+            <div class="col-6">
+                <div class="card text-dark mb-3">
+                    <div class="card-header h5">RDF Graph</div>
+                    <div class="card-body">
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <div class="input-group mb-3 w-75">
+                            <input class="form-control" type="file" name="data-graph-file" id="data-graph-file" accept=".csv, .xlsx, .json, .xml" multiple>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Graph URI</span>
+                            <input type="url" class="form-control" id="data-graph-uri" placeholder="Enter URI to Graph" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+
+                        <label for="data-graph-file" class="form-label float-start">Paste RDF Data</label>
+                        <textarea class="form-control" id="data-graph-text" rows="18"></textarea>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="card text-dark mb-3">
+                    <div class="card-header h5">SHACL Graph</div>
+                    <div class="card-body">
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <div class="input-group mb-3 w-75">
+                            <input class="form-control" type="file" name="shacl-graph-file" id="shacl-graph-file" accept=".csv, .xlsx, .json, .xml" multiple>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Graph URI</span>
+                            <input type="url" class="form-control" placeholder="Enter URI to Graph" id="shacl-graph-uri" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+
+                        <label for="shacl-graph-text" class="form-label float-start">Paste RDF Data</label>
+                        <textarea class="form-control" id="shacl-graph-text" rows="18"></textarea>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="row my-4">
+        <div class="col-12 text-center">
+            <button type="reset" class="btn btn-secondary btn-sm float-start">Clear Uploads</button>
+            <button type="submit" id="submit-button" class="btn btn-primary spinner-button">Execute</button>
+        </div>
+    </div>
+
+            </form>
+
+
+    <!--display debugging information depending on error detected by Morph-KGC-->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for msg in messages %}
+    <div class="alert alert-danger mt-3 w-50 mx-auto"  role="alert">
+        <h3 class="alert-heading fw-normal">Error</h3>
+        {% if "Bad syntax" in msg %}
+        <h6>Incorrect Syntax in Mapping! Validate <a href="http://ttl.summerofcode.be/" target="_blank">Here</a></h6>
+        {% elif "'object_map'" == msg or "single positional indexer is out-of-bounds" == msg or "'object'" == msg %}
+        <h6>Mapping does not follow <a href="https://rml.io/specs/rml/" target="_blank">RML Specification</a></h6>
+        {% elif "No such file" in msg %}
+        <!--    <h6>Source data stated below was not uploaded!</h6>-->
+        <h6>One or more of the Data Source Files mentioned in Mapping File have not been Uploaded!</h6>
+        {% endif %}
+        <p>{{msg | safe}}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+</div>
+
+</body>
+</html>
+
+<script>
+    // turn button into spinner when pressed
+    $(document.body).on('click', '.spinner-button' ,function(e){
+          $(this).css("pointer-events", "none");
+          $(this).text("");
+          $(this).attr("class", "spinner-border");
+    });
+
+    // reset the form if clear button clicked
+    $('.clear-buttonsssss').click(function(){
+       $('#mapping-form')[0].reset();
+    });
+</script>
