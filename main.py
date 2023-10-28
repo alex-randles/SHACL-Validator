@@ -140,12 +140,12 @@ def compare_mapping_sources(mapping_filename, uploaded_sources):
         return file_error_message
 
 
-def load_rdflib_graph(rdf_string, raw_rdf_data=False):
+def load_rdflib_graph(rdf_string, raw_rdf_data=False, file_format="ttl"):
     try:
         if raw_rdf_data:
-            graph = rdflib.Graph().parse(data=rdf_string, format="ttl")
+            graph = rdflib.Graph().parse(data=rdf_string, format=file_format)
         else:
-            graph = rdflib.Graph().parse(source=rdf_string, format="ttl")
+            graph = rdflib.Graph().parse(source=rdf_string, format=file_format)
         return graph
     except Exception as e:
         print(f"Exception loading graph: {e}")
@@ -157,7 +157,7 @@ def execute_shacl_shape():
     if request.method == "POST":
         form_data = request.form
         print(form_data)
-        shacl_graph, data_graph = None, None
+        shacl_graph, data_graph, file_format = None, None, "ttl"
         data_graph_text = form_data.get("data-graph-text")
         shacl_graph_text = form_data.get("shacl-graph-text")
         if data_graph_text:
@@ -171,9 +171,13 @@ def execute_shacl_shape():
 
         data_graph_file = request.files.get('data-graph-file')
         if data_graph_file:
-            if not data_graph_file.filename.endswith(".ttl"):
-                return {"error_message": "Data Graph File must be Turtle (.ttl)"}
-            data_graph = load_rdflib_graph(data_graph_file.read().decode("utf-8"), raw_rdf_data=True)
+            print(data_graph_file)
+            # if data_graph_file.filename not in [".xml", ".ttl", ".json"]:
+            #     return {"error_message": "Data Graph File must be Turtle (.ttl)"}
+            # if ".owl" in data_graph_file.filename or ".xml" in data_graph_file.filename:
+            #     file_format = "xml"
+            file_format = rdflib.util.guess_format(data_graph_file.filename)
+            data_graph = load_rdflib_graph(data_graph_file.read().decode("utf-8"), raw_rdf_data=True, file_format=file_format)
             if not data_graph:
                 return {"error_message": "Data Graph could not be parsed!"}
         shacl_graph_file = request.files.get('shacl-graph-file')
