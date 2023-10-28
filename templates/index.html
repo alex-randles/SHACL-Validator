@@ -52,7 +52,7 @@
     <form class="text-center my-1" action="{{ url_for('index') }}" id="upload-form" method="POST" enctype="multipart/form-data" >
         <div class="row">
             <div class="col-6">
-                <div class="card text-dark mb-3">
+                <div class="card text-dark mb-3" id="data-content">
                     <div class="card-header h5">RDF Graph</div>
                     <div class="card-body">
                         <p class="card-text">Please upload a Graph using only <strong>one</strong> of the options below.</p>
@@ -64,7 +64,7 @@
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Graph URI</span>
-                            <input type="url" class="form-control" id="data-graph-uri" placeholder="Enter URI to Graph" aria-label="Username" aria-describedby="basic-addon1">
+                            <input type="url" class="form-control" name="data-graph-uri" id="data-graph-uri" placeholder="Enter URI to Graph" aria-label="Username" aria-describedby="basic-addon1">
                             <span class="input-group-text">
                               <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle"></i>
                           </span>
@@ -82,7 +82,7 @@
             </div>
 
             <div class="col-6">
-                <div class="card text-dark mb-3">
+                <div class="card text-dark mb-3" id="shacl-content">
                     <div class="card-header h5">SHACL Graph</div>
                     <div class="card-body">
                         <p class="card-text">Please upload a Graph using only <strong>one</strong> of the options below.</p>
@@ -94,7 +94,7 @@
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text">Graph URI</span>
-                            <input type="url" class="form-control" placeholder="Enter URI to Graph" id="shacl-graph-uri" aria-label="Username" aria-describedby="basic-addon1">
+                            <input type="url" class="form-control" placeholder="Enter URI to Graph" name="shacl-graph-uri" id="shacl-graph-uri" aria-label="Username" aria-describedby="basic-addon1">
                             <span class="input-group-text">
                             <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle"></i>
                         </span>
@@ -114,7 +114,8 @@
 
         <div class="row my-4">
             <div class="col-12 text-center">
-                <button type="reset" class="btn btn-secondary btn-sm float-start">Clear Uploads</button>
+                <button type="reset" class="btn btn-secondary btn-sm float-start">Clear Data Graph</button>
+                <button type="reset" class="btn btn-secondary btn-sm float-end">Clear SHACL Graph</button>
                 <button type="submit" id="submit-button" class="btn btn-primary spinner-button">Execute</button>
             </div>
         </div>
@@ -211,27 +212,53 @@
                valid_form = true;
             }
         });
+        var shacl_count = 0;
+        $("#shacl-content input, #shacl-content textarea").not(':input[type=submit]').each(function() {
+            var current_value = $(this).val();
+            if (current_value.trim() != ""){
+               shacl_count = shacl_count + 1;
+               alert(current_value);
+            }
+        });
+        if (shacl_count > 1) {
+            valid_form = false;
+            showErrorMessage("Please provide only one source for SHACL Shapes");
+        }
+        if (!valid_form) {
+           return valid_form;
+        }
         return valid_form;
     }
 </script>
 <script>
     $(document).on('submit','#upload-form',function(e) {
         e.preventDefault();
-        // showErrorMessage("hehee");
+        $("#download-button").remove();
+        $("#modal-dialog").removeClass("modal-xl");
         var valid_form = validateUploadForm();
         if (!valid_form) {
            // showErrorMessage("Please upload both graphs!");
-           // return false;
+           return false;
         }
+        var form_data = new FormData();
+        form_data.append('data-graph-file', $('#data-graph-file').prop('files')[0]);
+        form_data.append('data-graph-text', $('#data-graph-text').val());
+        form_data.append('data-graph-uri', $('#data-graph-uri').val());
+        form_data.append('shacl-graph-file', $('#shacl-graph-file').prop('files')[0]);
+        form_data.append('shacl-graph-text', $('#shacl-graph-text').val());
+        form_data.append('shacl-graph-uri', $('#shacl-graph-uri').val());
         $.ajax({
             type:'POST',
             url:'{{ url_for("execute_shacl_shape") }}',
-            data:{
-                data: $('#upload-form').serialize(),
-            },
+            processData: false,
+            contentType: false,
+            data: form_data,
+            // data:{
+              //  data: $('#upload-form').serialize(),
+               // files: form_data,
+            // },
             success:function(response)
             {
-               $("#download-button").remove();
                error_message = response["error_message"];
                if (error_message) {
                   var error_message_html = `${error_message} </br> </br> Turtle RDF can be validated at the following <a href="http://ttl.summerofcode.be/" target="_blank">Link</a>`;
@@ -247,7 +274,7 @@
                     <pre class="py-2 alert alert-danger">${shacl_result_text}</pre>
                   `;
                    $("#modal-dialog").addClass("modal-xl");
-                   var download_button = '<a id="download-button" class="btn btn-sm btn-primary ms-3 mb-3 w-25">Download Report (.ttl)</a>';
+                   var download_button = '<a id="download-button" class="btn btn-sm btn-success  mx-auto mb-3 w-25">Download Report (.ttl)</a>';
                    $("#modal-body").after(download_button);
                    var download_button = $("#download-button");
                    var filename = "shacl_report.ttl";

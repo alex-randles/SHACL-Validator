@@ -140,9 +140,12 @@ def compare_mapping_sources(mapping_filename, uploaded_sources):
         return file_error_message
 
 
-def load_rdflib_graph(rdf_string):
+def load_rdflib_graph(rdf_string, raw_rdf_data=False):
     try:
-        graph = rdflib.Graph().parse(data=rdf_string, format="ttl")
+        if raw_rdf_data:
+            graph = rdflib.Graph().parse(data=rdf_string, format="ttl")
+        else:
+            graph = rdflib.Graph().parse(source=rdf_string, format="ttl")
         return graph
     except Exception as e:
         print(f"Exception loading graph: {e}")
@@ -152,20 +155,50 @@ def load_rdflib_graph(rdf_string):
 @app.route('/execute-shacl-shape', methods=["GET", "POST"])
 def execute_shacl_shape():
     if request.method == "POST":
-        form_data = {value.split("=")[0]: urllib.parse.unquote(value.split("=")[1]) for value in
-                     request.form.get("data").split("&") if urllib.parse.unquote(value.split("=")[1]) != 'None'}
-        # form_data = request.form.get("data")
+        form_data = request.form
+        print(form_data)
+        shacl_graph, data_graph = None, None
         data_graph_text = form_data.get("data-graph-text")
         shacl_graph_text = form_data.get("shacl-graph-text")
-        shacl_graph, data_graph = None, None
         if data_graph_text:
-            data_graph = load_rdflib_graph(data_graph_text)
+            data_graph = load_rdflib_graph(data_graph_text, raw_rdf_data=True)
             if not data_graph:
                 return {"error_message": "Data Graph could not be parsed!"}
         if shacl_graph_text:
-            shacl_graph = load_rdflib_graph(shacl_graph_text)
+            shacl_graph = load_rdflib_graph(shacl_graph_text, raw_rdf_data=True)
             if not shacl_graph:
                 return {"error_message": "SHACL Graph could not be parsed!"}
+
+        data_graph_file = request.files.get('data-graph-file')
+        if data_graph_file:
+            if not data_graph_file.filename.endswith(".ttl"):
+                return {"error_message": "Data Graph File must be Turtle (.ttl)"}
+            data_graph = load_rdflib_graph(data_graph_file.read().decode("utf-8"), raw_rdf_data=True)
+            if not data_graph:
+                return {"error_message": "Data Graph could not be parsed!"}
+        shacl_graph_file = request.files.get('shacl-graph-file')
+        if shacl_graph_file:
+            if not shacl_graph_file.filename.endswith(".ttl"):
+                return {"error_message": "SHACL Graph File must be Turtle (.ttl)"}
+            shacl_graph = load_rdflib_graph(shacl_graph_file.read().decode("utf-8"), raw_rdf_data=True)
+            if not data_graph:
+                return {"error_message": "SHACL Graph could not be parsed!"}
+        # exit()
+
+        data_graph_uri = form_data.get("data-graph-uri")
+        shacl_graph_uri = form_data.get("shacl-graph-uri")
+        if data_graph_uri:
+            data_graph = load_rdflib_graph(data_graph_uri)
+            if not data_graph:
+                return {"error_message": "Data Graph could not be parsed!"}
+        if shacl_graph_uri:
+            shacl_graph = load_rdflib_graph(shacl_graph_uri)
+            if not shacl_graph:
+                return {"error_message": "SHACL Graph could not be parsed!"}
+
+
+
+        print(data_graph.serialize(format="ttl"))
 
         if shacl_graph and data_graph:
             shacl_results = pyshacl.validate(data_graph, shacl_graph=shacl_graph)
@@ -177,12 +210,6 @@ def execute_shacl_shape():
                 "results_graph": results_graph,
             }
             return results
-        print(data_graph_text)
-
-        # print(form_data)
-        exit()
-        # for k, v in form_data.items():
-        #     print(k,v)
         return "whshs"
 
 # run the uploaded mapping
