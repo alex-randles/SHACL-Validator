@@ -6,7 +6,6 @@
     <rdf:type rdf:resource="http://example.org/Person"/>
     <ns0:ssn>987-65-432A</ns0:ssn>
     <ns0:ssn>987-65-432B</ns0:ssn>
-    <ns0:ssn>987-65-432C</ns0:ssn>
   </rdf:Description>
 
   <ns0:Person rdf:about="http://example.org/Bob">
@@ -15,7 +14,7 @@
   </ns0:Person>
 
   <ns0:Person rdf:about="http://example.org/Calvin">
-    <ns0:birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1971-07-07</ns0:birthDate>
+    <ns0:birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1971-07-07</ns0:birthDate>
     <ns0:worksFor rdf:resource="http://example.org/UntypedCompany"/>
   </ns0:Person>
 
