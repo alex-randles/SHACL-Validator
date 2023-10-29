@@ -3,12 +3,10 @@
     height:90%;
     display: flex;
     border: 1px solid rgb(203 213 225);
-    resize:none;
 }
 .container__textarea {
     width: 96%;
     border: none;
-    overflow:hidden;
 }
 .container__lines {
     border-right: 1px solid rgb(203 213 225);
