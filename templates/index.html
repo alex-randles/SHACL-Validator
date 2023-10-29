@@ -81,7 +81,7 @@
     <form class="text-center my-1" action="{{ url_for('index') }}" id="upload-form" method="POST" enctype="multipart/form-data" >
         <div class="row">
             <div class="col-6">
-                <div class="card text-dark mb-3" id="data-content">
+                <div class="card text-dark mb-3" id="Data-Graph">
                     <div class="card-header h5">Data Graph</div>
                     <div class="card-body">
                         <p class="card-text">Please upload the Data Graph using only <strong>one</strong> of the options below.</p>
@@ -104,21 +104,19 @@
                         </span>
                         <button type="button" class="btn btn-sm btn-secondary float-end mb-2 add-sample-graph">Add Sample Graph</button>
 
-                           <div class="container__box input-group">
-    <div id="data-line-numbers" class="container__lines"></div>
-    <textarea id="data-graph-text" class="container__textarea" name="data-graph-text" rows="18"></textarea>
-</div>
+                        <div class="container__box input-group">
+                            <div id="data-line-numbers" class="container__lines pe-2"></div>
+                            <textarea id="data-graph-text" class="container__textarea" name="data-graph-text" rows="18"></textarea>
+                        </div>
 
-
-
-<!--                        <textarea class="form-control" name="data-graph-text" id="data-graph-text" rows="18"></textarea>-->
+                        <!--                        <textarea class="form-control" name="data-graph-text" id="data-graph-text" rows="18"></textarea>-->
 
                     </div>
                 </div>
             </div>
 
             <div class="col-6">
-                <div class="card text-dark mb-3" id="shacl-content">
+                <div class="card text-dark mb-3" id="SHACL-Graph">
                     <div class="card-header h5">SHACL Graph</div>
                     <div class="card-body">
                         <p class="card-text">Please upload the SHACL Graph using only <strong>one</strong> of the options below.</p>
@@ -144,11 +142,11 @@
 
 
                         <div class="container__box input-group">
-    <div id="shacl-line-numbers" class="container__lines"></div>
-    <textarea id="shacl-graph-text" class="container__textarea" name="shacl-graph-text" rows="18" style="resize:none;"></textarea>
-</div>
+                            <div id="shacl-line-numbers" class="container__lines pe-2"></div>
+                            <textarea id="shacl-graph-text" class="container__textarea" name="shacl-graph-text" rows="18" style="resize:none;"></textarea>
+                        </div>
 
-<!--                        <textarea class="form-control mt-1" name="shacl-graph-text" id="shacl-graph-text" rows="18"></textarea>-->
+                        <!--                        <textarea class="form-control mt-1" name="shacl-graph-text" id="shacl-graph-text" rows="18"></textarea>-->
 
                     </div>
                 </div>
@@ -157,8 +155,8 @@
 
         <div class="row my-4">
             <div class="col-12 text-center">
-                <button type="button" class="btn btn-secondary btn-sm float-start clear-button" name="data-content">Clear Data Graph</button>
-                <button type="button" class="btn btn-secondary btn-sm float-end clear-button" name="shacl-content">Clear SHACL Graph</button>
+                <button type="button" class="btn btn-secondary btn-sm float-start clear-button" name="Data-Graph">Clear Data Graph</button>
+                <button type="button" class="btn btn-secondary btn-sm float-end clear-button" name="SHACL-Graph">Clear SHACL Graph</button>
                 <button type="submit" id="submit-button" class="btn btn-primary spinner-button">Execute</button>
             </div>
         </div>
@@ -167,24 +165,23 @@
 
 
     <!--display debugging information depending on error detected by Morph-KGC-->
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    {% for msg in messages %}
-    <div class="alert alert-danger mt-3 w-50 mx-auto"  role="alert">
-        <h3 class="alert-heading fw-normal">Error</h3>
-        {% if "Bad syntax" in msg %}
-        <h6>Incorrect Syntax in Mapping! Validate <a href="http://ttl.summerofcode.be/" target="_blank">Here</a></h6>
-        {% elif "'object_map'" == msg or "single positional indexer is out-of-bounds" == msg or "'object'" == msg %}
-        <h6>Mapping does not follow <a href="https://rml.io/specs/rml/" target="_blank">RML Specification</a></h6>
-        {% elif "No such file" in msg %}
-        <!--    <h6>Source data stated below was not uploaded!</h6>-->
-        <h6>One or more of the Data Source Files mentioned in Mapping File have not been Uploaded!</h6>
-        {% endif %}
-        <p>{{msg | safe}}</p>
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
+    <!--    {% with messages = get_flashed_messages() %}-->
+    <!--    {% if messages %}-->
+    <!--    {% for msg in messages %}-->
+    <!--    <div class="alert alert-danger mt-3 w-50 mx-auto"  role="alert">-->
+    <!--        <h3 class="alert-heading fw-normal">Error</h3>-->
+    <!--        {% if "Bad syntax" in msg %}-->
+    <!--        <h6>Incorrect Syntax in Mapping! Validate <a href="http://ttl.summerofcode.be/" target="_blank">Here</a></h6>-->
+    <!--        {% elif "'object_map'" == msg or "single positional indexer is out-of-bounds" == msg or "'object'" == msg %}-->
+    <!--        <h6>Mapping does not follow <a href="https://rml.io/specs/rml/" target="_blank">RML Specification</a></h6>-->
+    <!--        {% elif "No such file" in msg %}-->
+    <!--        <h6>One or more of the Data Source Files mentioned in Mapping File have not been Uploaded!</h6>-->
+    <!--        {% endif %}-->
+    <!--        <p>{{msg | safe}}</p>-->
+    <!--    </div>-->
+    <!--    {% endfor %}-->
+    <!--    {% endif %}-->
+    <!--    {% endwith %}-->
 
 </div>
 
@@ -210,6 +207,7 @@
 
 
 <script>
+    // show pop ups as a success or error message
     function showErrorMessage(error_message){
          $("#modal-title").addClass("text-danger").removeClass("text-success").text("Error");
          $("#modal-body").html(error_message);
@@ -240,20 +238,18 @@
        $(this).parent().find("input, textarea").val("");
        var text_area_name = $(this).parent().find("textarea").attr("name");
        if (text_area_name == "shacl-graph-text") {
-           var file_contents  = `{{open("sample_shacl_graph.ttl", "r+").read() | safe}}`;
+           var file_contents  = `{{ sample_shacl_graph | safe }}`;
        } else {
-           var file_contents  = `{{open("sample_data_graph.ttl", "r+").read() | safe}}`;
+           var file_contents  = `{{ sample_data_graph | safe}}`;
        }
-       // alert(file_contents);
        parent_text_area.val(file_contents).trigger("input");
     });
 </script>
 <script>
     function validateUploadForm(){
         var valid_form = true;
-        var div_id = ["data-content", "shacl-content"];
+        var div_id = ["Data-Graph", "SHACL-Graph"];
         var shacl_count = 0;
-
         for (let i = 0; i < div_id.length; i++) {
             var current_id = div_id[i];
             $(`#${current_id}`).find("input, textarea").not(':input[type=submit]').each(function() {
@@ -332,7 +328,7 @@
                     <p>The report is represented using the <a href="https://www.w3.org/TR/shacl/#dfn-validation-report-vocabulary" target="_blank"> SHACL Validation Report Vocabulary.</a>  </p>
                   `;
                    $("#modal-dialog").addClass("modal-xl");
-                   var download_button = '<a id="download-button" class="btn btn-sm btn-success  mx-auto mb-3 w-25">Download Report (.ttl)</a>';
+                   var download_button = '<a id="download-button" class="btn btn-success  mx-auto mb-3 w-25">Download Report (.ttl)</a>';
                    $("#modal-body").after(download_button);
                    var download_button = $("#download-button");
                    var filename = "shacl_report.ttl";
@@ -351,36 +347,35 @@
     });
 </script>
 <script>
+    // initialize tool tips
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     })
 </script>
 <script>
-    var textarea = document.getElementById('shacl-graph-text');
-    var lineNumbersEle = document.getElementById('shacl-line-numbers');
+    // initialize variables to track line numbers
+    var textarea;
+    var lineNumbersEle;
 
+    // add line numbers to textarea
     var displayLineNumbers = () => {
         var lines = textarea.value.split('\n');
         lineNumbersEle.innerHTML = Array.from({
             length: lines.length,
         }, (_, i) => `<div>${i + 1}</div>`).join('');
+
     }
-    $('#shacl-graph-text').on('propertychange input', function (e) {
-        textarea = document.getElementById('shacl-graph-text');
-        lineNumbersEle = document.getElementById('shacl-line-numbers');
+
+    // detect changes to lines in textarea
+    $("textarea").on('propertychange input', function (e) {
+        var textarea_id = $(this).attr("id");
+        textarea = document.getElementById(textarea_id);
+        var line_numbers_id = $(this).parent().find(".container__lines").attr("id");
+        lineNumbersEle = document.getElementById(line_numbers_id);
         displayLineNumbers();
 
-    });
-
-    $('#data-graph-text').on('propertychange input', function (e) {
-        textarea = document.getElementById('data-graph-text');
-        lineNumbersEle = document.getElementById('data-line-numbers');
-        displayLineNumbers();
-        $("#data-graph-text").attr('rows', 18);
     });
 
     // initialize line numbers
     $("textarea").trigger("input");
-
-
 </script>

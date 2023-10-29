@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import rdflib
 import pyshacl
-
+from markupsafe import Markup
 
 # definition of web application
 app = Flask(__name__)
@@ -15,9 +15,12 @@ app.config['FILE_COUNT'] = 0
 def index():
     if request.method == "GET":
         # returns the initial view displayed
+        sample_shacl_graph = open("sample_shacl_graph.ttl", "r+").read()
+        sample_data_graph = open("sample_data_graph.ttl", "r+").read()
         return render_template(
             "index.html",
-            open=open,
+            sample_shacl_graph=sample_shacl_graph,
+            sample_data_graph=sample_data_graph,
         )
 
 
