@@ -68,9 +68,9 @@
                 <div class="card text-dark mb-3" id="Data-Graph">
                     <div class="card-header h5">Data Graph</div>
                     <div class="card-body">
-                        <p class="card-text">Please upload the Data Graph using only <strong>one</strong> of the below options/p>
+                        <p class="card-text">Please upload the Data Graph using only <strong>one</strong> of the below options</p>
                         <div class="input-group mb-3 w-75">
-                            <input class="form-control" type="file" name="data-graph-file" id="data-graph-file" accept=".ttl">
+                            <input class="form-control" type="file" name="data-graph-file" id="data-graph-file" accept=".ttl, .xml, .owl, .jsonld">
                             <span class="input-group-text">
                             <i data-toggle="tooltip" data-placement="top" title="RDF File to be validated" class="bi bi-info-circle"></i>
                         </span>
@@ -86,8 +86,14 @@
                             <label for="data-graph-text" class="form-label">Paste RDF Data</label>
                             <i data-toggle="tooltip" data-placement="top" title="RDF Data to be validated" class="bi bi-info-circle ms-2"></i>
                         </span>
-                        <button type="button" class="btn btn-sm btn-secondary float-end mb-2 add-sample-graph">Add Sample Graph</button>
+<!--                        <button type="button" class="btn btn-sm btn-secondary float-end mb-2 add-sample-graph">Add Sample Graph</button>-->
 
+                        <select class="form-select w-auto float-end bg-light mb-2" aria-label="Default select example">
+  <option selected>Add Sample Graph</option>
+  <option value="1">Sample TTL</option>
+  <option value="2">Sample XML</option>
+  <option value="3">Sample JSON-LD</option>
+</select>
                         <div class="container__box input-group">
                             <div id="data-line-numbers" class="container__lines pe-2"></div>
                             <textarea id="data-graph-text" class="container__textarea" name="data-graph-text" rows="18"></textarea>
@@ -122,9 +128,12 @@
                             <label for="shacl-graph-text" class="form-label">Paste RDF Data</label>
                             <i data-toggle="tooltip" data-placement="top" title="RDF Data to be validated" class="bi bi-info-circle ms-2"></i>
                         </span>
-                        <button type="button" class="btn btn-sm btn-secondary mb-2 float-end add-sample-graph">Add Sample Graph</button>
-
-
+<!--                        <button type="button" class="btn btn-sm btn-secondary mb-2 float-end add-sample-graph">Add Sample Graph</button>-->
+  <select class="form-select w-auto float-end bg-light mb-2" aria-label="Default select example">
+  <option selected>Add Sample Graph</option>
+  <option value="1">Sample #1</option>
+  <option value="2">Sample #2</option>
+</select>
                         <div class="container__box input-group">
                             <div id="shacl-line-numbers" class="container__lines pe-2"></div>
                             <textarea id="shacl-graph-text" class="container__textarea" name="shacl-graph-text" rows="18" style="resize:none;"></textarea>
@@ -215,6 +224,40 @@
     $('.clear-button').click(function(){
        var content_div = $(this).attr("name");
        $(`#${content_div}`).find("input, textarea").val("").trigger("input");
+       $(`#${content_div}`).find('select').prop('selectedIndex',0);
+    });
+
+
+     $('select').on('change', '', function (e) {
+       var parent_text_area = $(this).parent().find("textarea");
+       $(this).parent().find("input, textarea").val("");
+       var text_area_name = $(this).parent().find("textarea").attr("name");
+       var selected_graph = $(this).val();
+       if (text_area_name == "shacl-graph-text") {
+           if (selected_graph == "0") {
+               var file_contents  = ``;
+           }
+           else if (selected_graph == "1") {
+               var file_contents  = `{{ sample_shacl_graph_1 | safe}}`;
+           }
+           else if (selected_graph == "2") {
+               var file_contents  = `{{ sample_shacl_graph_2 | safe}}`;
+           }
+       } else {
+           if (selected_graph == "0") {
+               var file_contents  = ``;
+           }
+           else if (selected_graph == "1") {
+               var file_contents  = `{{ sample_data_graph_ttl | safe}}`;
+           }
+           else if (selected_graph == "2") {
+               var file_contents  = `{{ sample_data_graph_xml | safe}}`;
+           }
+           else if (selected_graph == "3") {
+                var file_contents  = `{{ sample_data_graph_jsonld | safe}}`;
+           }
+       }
+       parent_text_area.val(file_contents).trigger("input");
     });
 
     $('.add-sample-graph').click(function(){
@@ -275,7 +318,7 @@
              return false;
         }
         var data_filename =  $('#data-graph-file').val();
-        if (data_filename && !data_filename.match(/(ttl|owl|xml)$/)) {
+        if (data_filename && !data_filename.match(/(ttl|owl|xml|jsonld)$/)) {
              showErrorMessage("Data Graph File Type Error!");
              return false;
         }

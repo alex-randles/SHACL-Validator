@@ -15,12 +15,18 @@ app.config['FILE_COUNT'] = 0
 def index():
     if request.method == "GET":
         # returns the initial view displayed
-        sample_shacl_graph = open("sample_shacl_graph.ttl", "r+").read()
-        sample_data_graph = open("sample_data_graph.ttl", "r+").read()
+        sample_shacl_graph_2 = open("sample_shacl_graph_2.ttl", "r+").read()
+        sample_shacl_graph_1 = open("sample_shacl_graph_1.ttl", "r+").read()
+        sample_data_graph_ttl = open("sample_data_graph.ttl", "r+").read()
+        sample_data_graph_xml = open("sample_data_graph.xml", "r+").read()
+        sample_data_graph_jsonld = open("sample_data_graph.jsonld", "r+").read()
         return render_template(
             "index.html",
-            sample_shacl_graph=sample_shacl_graph,
-            sample_data_graph=sample_data_graph,
+            sample_shacl_graph_1=sample_shacl_graph_1,
+            sample_shacl_graph_2=sample_shacl_graph_2,
+            sample_data_graph_ttl=sample_data_graph_ttl,
+            sample_data_graph_xml=sample_data_graph_xml,
+            sample_data_graph_jsonld=sample_data_graph_jsonld,
         )
 
 
@@ -46,11 +52,15 @@ def execute_shacl_shape():
         data_graph_text = form_data.get("data-graph-text")
         shacl_graph_text = form_data.get("shacl-graph-text")
         if data_graph_text:
-            data_graph = load_rdflib_graph(data_graph_text, raw_rdf_data=True)
+            if "xml" in data_graph_text:
+                file_format = "xml"
+            data_graph = load_rdflib_graph(data_graph_text, raw_rdf_data=True, file_format=file_format)
             if isinstance(data_graph, str):
                 return {"error_message": data_graph, "error_banner": "Data Graph has Incorrect Syntax!"}
         if shacl_graph_text:
-            shacl_graph = load_rdflib_graph(shacl_graph_text, raw_rdf_data=True)
+            if "xml" in data_graph_text:
+                file_format = "xml"
+            shacl_graph = load_rdflib_graph(shacl_graph_text, raw_rdf_data=True, file_format=file_format)
             if isinstance(shacl_graph, str):
                 return {"error_message": shacl_graph, "error_banner": "SHACL Graph has Incorrect Syntax!"}
 
