@@ -1,0 +1,12 @@
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix ex: <http://example.org/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+ex:DatatypeExampleShape
+	a sh:NodeShape ;
+	sh:targetNode ex:Alice, ex:Bob, ex:Carol ;
+	sh:property [
+		sh:path ex:age ;
+		sh:datatype xsd:integer ;
+	] .

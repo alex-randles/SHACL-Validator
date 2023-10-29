@@ -15,17 +15,21 @@ app.config['FILE_COUNT'] = 0
 def index():
     if request.method == "GET":
         # returns the initial view displayed
-        sample_shacl_graph_2 = open("sample_shacl_graph_2.ttl", "r+").read()
-        sample_shacl_graph_1 = open("sample_shacl_graph_1.ttl", "r+").read()
-        sample_data_graph_ttl = open("sample_data_graph.ttl", "r+").read()
-        sample_data_graph_xml = open("sample_data_graph.xml", "r+").read()
-        sample_data_graph_jsonld = open("sample_data_graph.jsonld", "r+").read()
+        sample_shacl_graph_3 = open("sample-graphs/shacl-graphs/graph_3.ttl", "r+").read()
+        sample_shacl_graph_2 = open("sample-graphs/shacl-graphs/graph_1.ttl", "r+").read()
+        sample_shacl_graph_1 = open("sample-graphs/shacl-graphs/graph_2.ttl", "r+").read()
+        sample_data_graph_ttl = open("sample-graphs/data-graphs/graph_1.ttl", "r+").read()
+        sample_data_graph_xml = open("sample-graphs/data-graphs/graph_2.xml", "r+").read()
+        sample_data_graph_jsonld = open("sample-graphs/data-graphs/graph_3.jsonld", "r+").read()
+        sample_data_graph_ttl_2 = open("sample-graphs/data-graphs/graph_4.ttl", "r+").read()
         return render_template(
             "index.html",
             sample_shacl_graph_1=sample_shacl_graph_1,
             sample_shacl_graph_2=sample_shacl_graph_2,
             sample_data_graph_ttl=sample_data_graph_ttl,
             sample_data_graph_xml=sample_data_graph_xml,
+            sample_data_graph_ttl_2=sample_data_graph_ttl_2,
+            sample_shacl_graph_3=sample_shacl_graph_3,
             sample_data_graph_jsonld=sample_data_graph_jsonld,
         )
 
@@ -42,6 +46,15 @@ def load_rdflib_graph(rdf_string, raw_rdf_data=False, file_format="ttl"):
         print(f"Exception loading graph: {e}")
         return str(e)
 
+def get_graph_format(graph_text):
+    if "</rdf:RDF>" in graph_text:
+        print(graph_text)
+        file_format = "xml"
+    elif "@id" in graph_text:
+        file_format = "json-ld"
+    else:
+        file_format = "ttl"
+    return file_format
 
 @app.route('/execute-shacl-shape', methods=["GET", "POST"])
 def execute_shacl_shape():
@@ -52,14 +65,12 @@ def execute_shacl_shape():
         data_graph_text = form_data.get("data-graph-text")
         shacl_graph_text = form_data.get("shacl-graph-text")
         if data_graph_text:
-            if "xml" in data_graph_text:
-                file_format = "xml"
+            file_format = get_graph_format(data_graph_text)
             data_graph = load_rdflib_graph(data_graph_text, raw_rdf_data=True, file_format=file_format)
             if isinstance(data_graph, str):
                 return {"error_message": data_graph, "error_banner": "Data Graph has Incorrect Syntax!"}
         if shacl_graph_text:
-            if "xml" in data_graph_text:
-                file_format = "xml"
+            file_format = get_graph_format(shacl_graph_text)
             shacl_graph = load_rdflib_graph(shacl_graph_text, raw_rdf_data=True, file_format=file_format)
             if isinstance(shacl_graph, str):
                 return {"error_message": shacl_graph, "error_banner": "SHACL Graph has Incorrect Syntax!"}
@@ -91,12 +102,20 @@ def execute_shacl_shape():
             data_graph = load_rdflib_graph(data_graph_uri, file_format=file_format)
             print(data_graph_uri)
             if not data_graph:
-                return {"error_message": "Data Graph could not be parsed!"}
+                if "HTTP Error 404" in data_graph:
+                    error_banner = "File could not be retrieved!"
+                else:
+                    error_banner = "SHACL Graph has Incorrect Syntax!"
+                return {"error_message": data_graph, "error_banner": error_banner}
         if shacl_graph_uri:
             file_format = rdflib.util.guess_format(shacl_graph_uri)
             shacl_graph = load_rdflib_graph(shacl_graph_uri, file_format=file_format)
             if isinstance(shacl_graph, str):
-                return {"error_message": shacl_graph, "error_banner": "SHACL Graph has Incorrect Syntax!"}
+                if "HTTP Error 404" in shacl_graph:
+                    error_banner = "File could not be retrieved!"
+                else:
+                    error_banner = "SHACL Graph has Incorrect Syntax!"
+                return {"error_message": shacl_graph, "error_banner": error_banner}
         if shacl_graph and data_graph:
             print(f'Data graph loaded:\n {data_graph.serialize(format="ttl")}')
             print(f'SHACL graph loaded:\n {shacl_graph.serialize(format="ttl")}')

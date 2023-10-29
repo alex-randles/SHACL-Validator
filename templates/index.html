@@ -16,7 +16,7 @@
 <div class="container-fluid">
     <div class="row" style="background-color:#F8F8F8;">
         <div class="col-7">
-            <h1 class="text-center text-dark mt-2 float-end">SHACL Validator</h1>
+            <h2 class="text-center text-dark mt-2 float-end">SHACL Validator</h2>
 
         </div>
         <div class="col-5 my-auto">
@@ -86,17 +86,18 @@
                             <label for="data-graph-text" class="form-label">Paste RDF Data</label>
                             <i data-toggle="tooltip" data-placement="top" title="RDF Data to be validated" class="bi bi-info-circle ms-2"></i>
                         </span>
-<!--                        <button type="button" class="btn btn-sm btn-secondary float-end mb-2 add-sample-graph">Add Sample Graph</button>-->
+                        <!--                        <button type="button" class="btn btn-sm btn-secondary float-end mb-2 add-sample-graph">Add Sample Graph</button>-->
 
                         <select class="form-select w-auto float-end bg-light mb-2" aria-label="Default select example">
-  <option selected>Add Sample Graph</option>
-  <option value="1">Sample TTL</option>
-  <option value="2">Sample XML</option>
-  <option value="3">Sample JSON-LD</option>
-</select>
+                            <option selected>Add Sample Graph</option>
+                            <option value="1">Sample TTL #1</option>
+                            <option value="2">Sample XML</option>
+                            <option value="3">Sample JSON-LD</option>
+                            <option value="4">Sample TTL #2</option>
+                        </select>
                         <div class="container__box input-group">
                             <div id="data-line-numbers" class="container__lines pe-2"></div>
-                            <textarea id="data-graph-text" class="container__textarea" name="data-graph-text" rows="18"></textarea>
+                            <textarea id="data-graph-text" class="container__textarea" name="data-graph-text" rows="19"></textarea>
                         </div>
 
                         <!--                        <textarea class="form-control" name="data-graph-text" id="data-graph-text" rows="18"></textarea>-->
@@ -128,15 +129,16 @@
                             <label for="shacl-graph-text" class="form-label">Paste RDF Data</label>
                             <i data-toggle="tooltip" data-placement="top" title="RDF Data to be validated" class="bi bi-info-circle ms-2"></i>
                         </span>
-<!--                        <button type="button" class="btn btn-sm btn-secondary mb-2 float-end add-sample-graph">Add Sample Graph</button>-->
-  <select class="form-select w-auto float-end bg-light mb-2" aria-label="Default select example">
-  <option selected>Add Sample Graph</option>
-  <option value="1">Sample #1</option>
-  <option value="2">Sample #2</option>
-</select>
+                        <!--                        <button type="button" class="btn btn-sm btn-secondary mb-2 float-end add-sample-graph">Add Sample Graph</button>-->
+                        <select class="form-select w-auto float-end bg-light mb-2" aria-label="Default select example">
+                            <option selected>Add Sample Graph</option>
+                            <option value="1">Sample #1</option>
+                            <option value="2">Sample #2</option>
+                            <option value="3">Sample #3</option>
+                        </select>
                         <div class="container__box input-group">
                             <div id="shacl-line-numbers" class="container__lines pe-2"></div>
-                            <textarea id="shacl-graph-text" class="container__textarea" name="shacl-graph-text" rows="18" style="resize:none;"></textarea>
+                            <textarea id="shacl-graph-text" class="container__textarea" name="shacl-graph-text" rows="19" style="resize:none;"></textarea>
                         </div>
 
                         <!--                        <textarea class="form-control mt-1" name="shacl-graph-text" id="shacl-graph-text" rows="18"></textarea>-->
@@ -243,6 +245,9 @@
            else if (selected_graph == "2") {
                var file_contents  = `{{ sample_shacl_graph_2 | safe}}`;
            }
+           else if (selected_graph == "3") {
+               var file_contents  = `{{ sample_shacl_graph_3 | safe}}`;
+           }
        } else {
            if (selected_graph == "0") {
                var file_contents  = ``;
@@ -255,6 +260,9 @@
            }
            else if (selected_graph == "3") {
                 var file_contents  = `{{ sample_data_graph_jsonld | safe}}`;
+           }
+           else if (selected_graph == "4") {
+                var file_contents  = `{{ sample_data_graph_ttl_2 | safe}}`;
            }
        }
        parent_text_area.val(file_contents).trigger("input");
