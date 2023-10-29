@@ -22,7 +22,7 @@
             <a href="" class="float-end text-decoration-none text-muted fw-normal" target="_blank">
                 <i class="bi bi-camera-reels">
                 </i>
-                                    Video Demo
+                Video Demo
 
             </a>
 
@@ -67,23 +67,23 @@
                 <div class="card text-dark mb-3" id="data-content">
                     <div class="card-header h5">RDF Graph</div>
                     <div class="card-body">
-                        <p class="card-text">Please upload a Graph using only <strong>one</strong> of the options below.</p>
+                        <p class="card-text">Please upload the Data Graph using only <strong>one</strong> of the options below.</p>
                         <div class="input-group mb-3 w-75">
                             <input class="form-control" type="file" name="data-graph-file" id="data-graph-file" accept=".ttl">
                             <span class="input-group-text">
-                            <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle"></i>
+                            <i data-toggle="tooltip" data-placement="top" title="RDF File to be validated" class="bi bi-info-circle"></i>
                         </span>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Graph URI</span>
                             <input type="url" class="form-control" name="data-graph-uri" id="data-graph-uri" placeholder="Enter URI to Graph" aria-label="Username" aria-describedby="basic-addon1">
                             <span class="input-group-text">
-                              <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle"></i>
+                              <i data-toggle="tooltip" data-placement="top" title="File path of the graph to be validated" class="bi bi-info-circle"></i>
                           </span>
                         </div>
                         <span class="float-start">
                             <label for="data-graph-text" class="form-label">Paste RDF Data</label>
-                            <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle ms-2"></i>
+                            <i data-toggle="tooltip" data-placement="top" title="RDF Data to be validated" class="bi bi-info-circle ms-2"></i>
                         </span>
                         <button type="button" class="btn btn-sm btn-secondary float-end mb-2 add-sample-graph">Add Sample Graph</button>
 
@@ -97,24 +97,24 @@
                 <div class="card text-dark mb-3" id="shacl-content">
                     <div class="card-header h5">SHACL Graph</div>
                     <div class="card-body">
-                        <p class="card-text">Please upload a Graph using only <strong>one</strong> of the options below.</p>
+                        <p class="card-text">Please upload the SHACL Graph using only <strong>one</strong> of the options below.</p>
                         <div class="input-group mb-3 w-75">
                             <input class="form-control" type="file" name="shacl-graph-file" id="shacl-graph-file" accept=".ttl">
                             <span class="input-group-text">
-                            <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle"></i>
+                            <i data-toggle="tooltip" data-placement="top" title="RDF File to be validated" class="bi bi-info-circle"></i>
                         </span>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text">Graph URI</span>
                             <input type="url" class="form-control" placeholder="Enter URI to Graph" name="shacl-graph-uri" id="shacl-graph-uri" aria-label="Username" aria-describedby="basic-addon1">
                             <span class="input-group-text">
-                            <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle"></i>
+                            <i data-toggle="tooltip" data-placement="top" title="File path of the graph to be validated" class="bi bi-info-circle"></i>
                         </span>
                         </div>
 
                         <span class="float-start">
                             <label for="shacl-graph-text" class="form-label">Paste RDF Data</label>
-                            <i data-toggle="tooltip" data-placement="top" title="Test" class="bi bi-info-circle ms-2"></i>
+                            <i data-toggle="tooltip" data-placement="top" title="RDF Data to be validated" class="bi bi-info-circle ms-2"></i>
                         </span>
                         <button type="button" class="btn btn-sm btn-secondary mb-2 float-end add-sample-graph">Add Sample Graph</button>
                         <textarea class="form-control mt-1" name="shacl-graph-text" id="shacl-graph-text" rows="18"></textarea>
@@ -158,7 +158,7 @@
 </div>
 
 <div class="modal fade" id="modal" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" id="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" id="modal-dialog">
         <div class="modal-content" id="success-modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-danger" id="modal-title">Error</h5>
@@ -201,11 +201,12 @@
     // reset the form if clear button clicked
     $('.clear-button').click(function(){
        var content_div = $(this).attr("name");
-       $(`#${content_div} input, #${content_div} textarea`).val("");
+       $(`#${content_div}`).find("input, textarea").val("");
     });
 
     $('.add-sample-graph').click(function(){
        var parent_text_area = $(this).parent().find("textarea");
+       $(this).parent().find("input, textarea").val("");
        var text_area_name = $(this).parent().find("textarea").attr("name");
        if (text_area_name == "shacl-graph-text") {
            var file_contents  = `{{open("sample_shacl_graph.ttl", "r+").read() | safe}}`;
@@ -218,36 +219,31 @@
 </script>
 <script>
     function validateUploadForm(){
-        var valid_form = false;
-        $("#upload-form input,textarea").each(function() {
-            var current_value = $(this).val();
-            if (current_value.trim() != ""){
-               valid_form = true;
-            }
-        });
-        var div_id = ["shacl-content", "data-content"];
-        for (current_id in div_id) {
-        alert("shsdh");
-            var shacl_count = 0;
-            alert(current_id);
-            $(`#${current_id} input, #shacl-content textarea`).not(':input[type=submit]').each(function() {
+        var valid_form = true;
+        var div_id = ["data-content", "shacl-content"];
+        var shacl_count = 0;
+
+        for (let i = 0; i < div_id.length; i++) {
+            var current_id = div_id[i];
+            $(`#${current_id}`).find("input, textarea").not(':input[type=submit]').each(function() {
                 var current_value = $(this).val();
                 if (current_value.trim() != ""){
                    shacl_count = shacl_count + 1;
-                   alert(current_value);
+                   // alert(current_value);
                 }
             });
             if (shacl_count > 1) {
                 valid_form = false;
-                showErrorMessage("Please provide only one source for SHACL Shapes");
+                showErrorMessage(`Please provide only one source for ${current_id.replace("-", " ")}`);
             }
             if (shacl_count == 0) {
                 valid_form = false;
-                showErrorMessage("No SHACL shapes uploaded!");
+                showErrorMessage(`No ${current_id.replace("-", " ")} uploaded!`);
             }
             if (!valid_form) {
                return valid_form;
             }
+            shacl_count = 0;
         }
         return valid_form;
     }
@@ -261,6 +257,16 @@
         if (!valid_form) {
            // showErrorMessage("Please upload both graphs!");
            return false;
+        }
+        var shacl_filename =  $('#shacl-graph-file').val();
+        if (shacl_filename && !shacl_filename.endsWith(".ttl")) {
+             showErrorMessage("SHACL Graph File Type Error!");
+             return false;
+        }
+        var data_filename =  $('#data-graph-file').val();
+        if (data_filename && !data_filename.match(/(ttl|owl|xml)$/)) {
+             showErrorMessage("Data Graph File Type Error!");
+             return false;
         }
         var form_data = new FormData();
         form_data.append('data-graph-file', $('#data-graph-file').prop('files')[0]);
@@ -283,7 +289,8 @@
             {
                error_message = response["error_message"];
                if (error_message) {
-                  var error_message_html = `${error_message} </br> </br> Turtle RDF can be validated at the following <a href="http://ttl.summerofcode.be/" target="_blank">Link</a>`;
+                  var error_banner = response["error_banner"];
+                  var error_message_html = `<p>${error_banner}</p> <div class="alert alert-danger">${error_message}</div> </br> Turtle RDF can be validated at the following <a href="http://ttl.summerofcode.be/" target="_blank">Link</a>`;
                   showErrorMessage(error_message_html);
                   return false;
                }
