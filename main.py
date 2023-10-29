@@ -26,6 +26,7 @@ def index():
 
 def load_rdflib_graph(rdf_string, raw_rdf_data=False, file_format="ttl"):
     try:
+        print(f"File format: {file_format}")
         if raw_rdf_data:
             graph = rdflib.Graph().parse(data=rdf_string, format=file_format)
         else:
@@ -61,7 +62,6 @@ def execute_shacl_shape():
             # if ".owl" in data_graph_file.filename or ".xml" in data_graph_file.filename:
             #     file_format = "xml"
             file_format = rdflib.util.guess_format(data_graph_file.filename)
-            file_format = "ttl"
             data_graph = load_rdflib_graph(data_graph_file.read().decode("utf-8"), raw_rdf_data=True, file_format=file_format)
             if not data_graph:
                 return {"error_message": "Data Graph could not be parsed!"}
@@ -77,12 +77,14 @@ def execute_shacl_shape():
         data_graph_uri = form_data.get("data-graph-uri")
         shacl_graph_uri = form_data.get("shacl-graph-uri")
         if data_graph_uri:
-            data_graph = load_rdflib_graph(data_graph_uri)
+            file_format = rdflib.util.guess_format(data_graph_uri)
+            data_graph = load_rdflib_graph(data_graph_uri, file_format=file_format)
             print(data_graph_uri)
             if not data_graph:
                 return {"error_message": "Data Graph could not be parsed!"}
         if shacl_graph_uri:
-            shacl_graph = load_rdflib_graph(shacl_graph_uri)
+            file_format = rdflib.util.guess_format(shacl_graph_uri)
+            shacl_graph = load_rdflib_graph(shacl_graph_uri, file_format=file_format)
             if isinstance(shacl_graph, str):
                 return {"error_message": shacl_graph, "error_banner": "SHACL Graph has Incorrect Syntax!"}
         if shacl_graph and data_graph:

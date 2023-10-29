@@ -5,6 +5,8 @@
   <rdf:Description rdf:about="http://example.org/Alice">
     <rdf:type rdf:resource="http://example.org/Person"/>
     <ns0:ssn>987-65-432A</ns0:ssn>
+    <ns0:ssn>987-65-432B</ns0:ssn>
+    <ns0:ssn>987-65-432C</ns0:ssn>
   </rdf:Description>
 
   <ns0:Person rdf:about="http://example.org/Bob">
