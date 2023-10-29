@@ -68,7 +68,7 @@
                 <div class="card text-dark mb-3" id="Data-Graph">
                     <div class="card-header h5">Data Graph</div>
                     <div class="card-body">
-                        <p class="card-text">Please upload the Data Graph using only <strong>one</strong> of the options below.</p>
+                        <p class="card-text">Please upload the Data Graph using only <strong>one</strong> of the below options/p>
                         <div class="input-group mb-3 w-75">
                             <input class="form-control" type="file" name="data-graph-file" id="data-graph-file" accept=".ttl">
                             <span class="input-group-text">
@@ -103,7 +103,7 @@
                 <div class="card text-dark mb-3" id="SHACL-Graph">
                     <div class="card-header h5">SHACL Graph</div>
                     <div class="card-body">
-                        <p class="card-text">Please upload the SHACL Graph using only <strong>one</strong> of the options below.</p>
+                        <p class="card-text">Please upload the SHACL Graph using only <strong>one</strong> of the below options</p>
                         <div class="input-group mb-3 w-75">
                             <input class="form-control" type="file" name="shacl-graph-file" id="shacl-graph-file" accept=".ttl">
                             <span class="input-group-text">
@@ -191,7 +191,7 @@
 
 
 <script>
-    // show pop ups as a success or error message
+    // show pop-ups as a success or error message
     function showErrorMessage(error_message){
          $("#modal-title").addClass("text-danger").removeClass("text-success").text("Error");
          $("#modal-body").html(error_message);
@@ -232,29 +232,30 @@
 <script>
     function validateUploadForm(){
         var valid_form = true;
+        // check if only one input provided for Data and SHACL graph
         var div_id = ["Data-Graph", "SHACL-Graph"];
-        var shacl_count = 0;
+        var input_count = 0;
         for (let i = 0; i < div_id.length; i++) {
             var current_id = div_id[i];
             $(`#${current_id}`).find("input, textarea").not(':input[type=submit]').each(function() {
                 var current_value = $(this).val();
                 if (current_value.trim() != ""){
-                   shacl_count = shacl_count + 1;
+                   input_count = input_count + 1;
                    // alert(current_value);
                 }
             });
-            if (shacl_count > 1) {
+            if (input_count > 1) {
                 valid_form = false;
                 showErrorMessage(`Please provide only one source for ${current_id.replace("-", " ")}`);
             }
-            if (shacl_count == 0) {
+            if (input_count == 0) {
                 valid_form = false;
                 showErrorMessage(`No ${current_id.replace("-", " ")} uploaded!`);
             }
             if (!valid_form) {
                return valid_form;
             }
-            shacl_count = 0;
+            input_count = 0;
         }
         return valid_form;
     }
@@ -266,7 +267,6 @@
         $("#modal-dialog").removeClass("modal-xl");
         var valid_form = validateUploadForm();
         if (!valid_form) {
-           // showErrorMessage("Please upload both graphs!");
            return false;
         }
         var shacl_filename =  $('#shacl-graph-file').val();
@@ -347,8 +347,6 @@
         lineNumbersEle.innerHTML = Array.from({
             length: lines.length,
         }, (_, i) => `<div>${i + 1}</div>`).join('');
-
-
     }
 
     // detect changes to lines in textarea

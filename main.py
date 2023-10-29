@@ -85,13 +85,9 @@ def execute_shacl_shape():
             shacl_graph = load_rdflib_graph(shacl_graph_uri)
             if isinstance(shacl_graph, str):
                 return {"error_message": shacl_graph, "error_banner": "SHACL Graph has Incorrect Syntax!"}
-
-
-
-
-        print(data_graph.serialize(format="ttl"))
-
         if shacl_graph and data_graph:
+            print(f'Data graph loaded:\n {data_graph.serialize(format="ttl")}')
+            print(f'SHACL graph loaded:\n {shacl_graph.serialize(format="ttl")}')
             shacl_results = pyshacl.validate(data_graph, shacl_graph=shacl_graph)
             conforms, results_graph, results_text = shacl_results
             results_graph = results_graph.serialize(format="ttl")
@@ -100,8 +96,8 @@ def execute_shacl_shape():
                 "results_text": results_text,
                 "results_graph": results_graph,
             }
+            print(f'SHACL validation results: \n {results}')
             return results
-
 
 
 @app.errorhandler(Exception)

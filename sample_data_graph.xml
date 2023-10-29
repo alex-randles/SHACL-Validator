@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:ns0="http://example.org/">
+
+  <rdf:Description rdf:about="http://example.org/Alice">
+    <rdf:type rdf:resource="http://example.org/Person"/>
+    <ns0:ssn>987-65-432A</ns0:ssn>
+  </rdf:Description>
+
+  <ns0:Person rdf:about="http://example.org/Bob">
+    <ns0:ssn>123-45-6789</ns0:ssn>
+    <ns0:ssn>124-35-6789</ns0:ssn>
+  </ns0:Person>
+
+  <ns0:Person rdf:about="http://example.org/Calvin">
+    <ns0:birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1971-07-07</ns0:birthDate>
+    <ns0:worksFor rdf:resource="http://example.org/UntypedCompany"/>
+  </ns0:Person>
+
+</rdf:RDF>
