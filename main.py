@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request
 import rdflib
 import pyshacl
-from markupsafe import Markup
 
 # definition of web application
 app = Flask(__name__)
@@ -22,6 +21,7 @@ def index():
 
 
 def load_rdflib_graph(rdf_string, raw_rdf_data=False, file_format="ttl"):
+    # load RDF string or file and capture errors
     try:
         print(f"File format: {file_format}")
         if raw_rdf_data:
@@ -36,7 +36,7 @@ def load_rdflib_graph(rdf_string, raw_rdf_data=False, file_format="ttl"):
 def get_graph_format(graph_text):
     # outputs the format of a graph based on common strings used
     file_formats = {
-        "xml": ["</rdf:RDF>"],
+        "xml": ["</rdf:RDF>", "<?xml"],
         "json-ld": ["@id", "@type"],
     }
     for file_format, strings in file_formats.items():
@@ -63,7 +63,6 @@ def execute_shacl_shape():
             shacl_graph = load_rdflib_graph(shacl_graph_text, raw_rdf_data=True, file_format=file_format)
             if isinstance(shacl_graph, str):
                 return {"error_message": shacl_graph, "error_banner": "SHACL Graph has Incorrect Syntax!"}
-
         data_graph_file = request.files.get('data-graph-file')
         if data_graph_file != "undefined" and data_graph_file:
             # print(data_graph_file)
@@ -82,8 +81,6 @@ def execute_shacl_shape():
             shacl_graph = load_rdflib_graph(shacl_graph_file.read().decode("utf-8"), raw_rdf_data=True)
             if isinstance(shacl_graph, str):
                 return {"error_message": shacl_graph, "error_banner": "SHACL Graph has Incorrect Syntax!"}
-        # exit()
-
         data_graph_uri = form_data.get("data-graph-uri")
         shacl_graph_uri = form_data.get("shacl-graph-uri")
         if data_graph_uri:
