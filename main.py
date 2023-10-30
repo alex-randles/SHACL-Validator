@@ -15,22 +15,9 @@ app.config['FILE_COUNT'] = 0
 def index():
     if request.method == "GET":
         # returns the initial view displayed
-        sample_shacl_graph_3 = open("sample-graphs/shacl-graphs/graph_3.ttl", "r+").read()
-        sample_shacl_graph_2 = open("sample-graphs/shacl-graphs/graph_1.ttl", "r+").read()
-        sample_shacl_graph_1 = open("sample-graphs/shacl-graphs/graph_2.ttl", "r+").read()
-        sample_data_graph_ttl = open("sample-graphs/data-graphs/graph_1.ttl", "r+").read()
-        sample_data_graph_xml = open("sample-graphs/data-graphs/graph_2.xml", "r+").read()
-        sample_data_graph_jsonld = open("sample-graphs/data-graphs/graph_3.jsonld", "r+").read()
-        sample_data_graph_ttl_2 = open("sample-graphs/data-graphs/graph_4.ttl", "r+").read()
         return render_template(
             "index.html",
-            sample_shacl_graph_1=sample_shacl_graph_1,
-            sample_shacl_graph_2=sample_shacl_graph_2,
-            sample_data_graph_ttl=sample_data_graph_ttl,
-            sample_data_graph_xml=sample_data_graph_xml,
-            sample_data_graph_ttl_2=sample_data_graph_ttl_2,
-            sample_shacl_graph_3=sample_shacl_graph_3,
-            sample_data_graph_jsonld=sample_data_graph_jsonld,
+            open=open,
         )
 
 
@@ -47,14 +34,16 @@ def load_rdflib_graph(rdf_string, raw_rdf_data=False, file_format="ttl"):
         return str(e)
 
 def get_graph_format(graph_text):
-    if "</rdf:RDF>" in graph_text:
-        print(graph_text)
-        file_format = "xml"
-    elif "@id" in graph_text:
-        file_format = "json-ld"
-    else:
-        file_format = "ttl"
-    return file_format
+    # outputs the format of a graph based on common strings used
+    file_formats = {
+        "xml": ["</rdf:RDF>"],
+        "json-ld": ["@id", "@type"],
+    }
+    for file_format, strings in file_formats.items():
+        for value in strings:
+            if value in graph_text:
+                return file_format
+    return "ttl"
 
 @app.route('/execute-shacl-shape', methods=["GET", "POST"])
 def execute_shacl_shape():

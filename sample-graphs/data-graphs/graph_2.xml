@@ -17,5 +17,4 @@
     <ns0:birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1971-07-07</ns0:birthDate>
     <ns0:worksFor rdf:resource="http://example.org/UntypedCompany"/>
   </ns0:Person>
-
 </rdf:RDF>

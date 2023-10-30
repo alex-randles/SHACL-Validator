@@ -240,29 +240,29 @@
                var file_contents  = ``;
            }
            else if (selected_graph == "1") {
-               var file_contents  = `{{ sample_shacl_graph_1 | safe}}`;
+               var file_contents  = `{{ open("sample-graphs/shacl-graphs/graph_1.ttl", "r+").read() | safe}}`;
            }
            else if (selected_graph == "2") {
-               var file_contents  = `{{ sample_shacl_graph_2 | safe}}`;
+               var file_contents  = `{{ open("sample-graphs/shacl-graphs/graph_2.ttl", "r+").read() | safe}}`;
            }
            else if (selected_graph == "3") {
-               var file_contents  = `{{ sample_shacl_graph_3 | safe}}`;
+               var file_contents  = `{{ open("sample-graphs/shacl-graphs/graph_3.ttl", "r+").read() | safe}}`;
            }
        } else {
            if (selected_graph == "0") {
                var file_contents  = ``;
            }
            else if (selected_graph == "1") {
-               var file_contents  = `{{ sample_data_graph_ttl | safe}}`;
+               var file_contents  = `{{ open("sample-graphs/data-graphs/graph_1.ttl", "r+").read() | safe}}`;
            }
            else if (selected_graph == "2") {
-               var file_contents  = `{{ sample_data_graph_xml | safe}}`;
+               var file_contents  = `{{ open("sample-graphs/data-graphs/graph_2.xml", "r+").read() | safe}}`;
            }
            else if (selected_graph == "3") {
-                var file_contents  = `{{ sample_data_graph_jsonld | safe}}`;
+                var file_contents  = `{{ open("sample-graphs/data-graphs/graph_3.jsonld", "r+").read() | safe}}`;
            }
            else if (selected_graph == "4") {
-                var file_contents  = `{{ sample_data_graph_ttl_2 | safe}}`;
+                var file_contents  = `{{ open("sample-graphs/data-graphs/graph_4.ttl", "r+").read() | safe}}`;
            }
        }
        parent_text_area.val(file_contents).trigger("input");
