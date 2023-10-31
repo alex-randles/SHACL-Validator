@@ -95,9 +95,9 @@
                             <option value="3">Sample JSON-LD</option>
                             <option value="4">Sample TTL #2</option>
                         </select>
-                        <div class="container__box input-group">
+                        <div class="container__box input-group" style="overflow:hidden;">
                             <div id="data-line-numbers" class="container__lines pe-2"></div>
-                            <textarea id="data-graph-text" class="container__textarea" name="data-graph-text" rows="19"></textarea>
+                            <textarea id="data-graph-text" class="container__textarea" name="data-graph-text" rows="19" style="resize:none;"></textarea>
                         </div>
 
                         <!--                        <textarea class="form-control" name="data-graph-text" id="data-graph-text" rows="18"></textarea>-->
@@ -136,7 +136,7 @@
                             <option value="2">Sample #2</option>
                             <option value="3">Sample #3</option>
                         </select>
-                        <div class="container__box input-group">
+                        <div class="container__box input-group" style="overflow:hidden;">
                             <div id="shacl-line-numbers" class="container__lines pe-2"></div>
                             <textarea id="shacl-graph-text" class="container__textarea" name="shacl-graph-text" rows="19" style="resize:none;"></textarea>
                         </div>
@@ -397,7 +397,13 @@
         var lines = textarea.value.split('\n');
         lineNumbersEle.innerHTML = Array.from({
             length: lines.length,
-        }, (_, i) => `<div>${i + 1}</div>`).join('');
+        }, (_, i) => `<div style="white-space: nowrap;">${i + 1}</div>`).join('');
+        if (lines.length > 19) {
+            var margin = (lines.length - 19) * 16;
+            lineNumbersEle.style = `width: 30px; height: 464px;margin-top:-${margin}px;`;
+        } else {
+           lineNumbersEle.style = "width: 30px; height: 464px;";
+        }
     }
 
     // detect changes to lines in textarea
@@ -411,4 +417,6 @@
 
     // initialize line numbers
     $("textarea").trigger("input");
+
+
 </script>
