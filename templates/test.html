@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,53 +13,53 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='homepage_favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     <style>
-      .editor {
-        display: inline-flex;
-        gap: 10px;
-        font-family: monospace;
-        line-height: 21px;
-        background: white;
-        border-radius: 2px;
-        padding: 20px 10px;
-        height: 200px;
-        overflow-y: auto;
-      }
+        .editor {
+          display: inline-flex;
+          gap: 10px;
+          font-family: monospace;
+          line-height: 21px;
+          background: white;
+          border-radius: 2px;
+          padding: 20px 10px;
+          height: 200px;
+          overflow-y: auto;
+        }
 
-      .line-numbers {
-        width: auto;
-        text-align: right;
-        height: 9999px;
-      }
+        .line-numbers {
+          width: auto;
+          text-align: right;
+          height: 9999px;
+        }
 
-      .line-numbers span {
-        counter-increment:  linenumber;
-      }
+        .line-numbers span {
+          counter-increment:  linenumber;
+        }
 
-      .line-numbers span::before {
-        content: counter(linenumber);
-        display: block;
-      }
+        .line-numbers span::before {
+          content: counter(linenumber);
+          display: block;
+        }
 
-      textarea {
-        height: 9999px;
-        line-height: 21px;
-        overflow-y: hidden;
-        padding: 0;
-        border: 0;
-       // background: #282a3a;
-       // color: #FFF;
-        min-width: 850px;
-        outline: none;
-        resize: none;
-      }
+        textarea {
+          height: 9999px;
+          line-height: 21px;
+          overflow-y: hidden;
+          padding: 0;
+          border: 0;
+         // background: #282a3a;
+         // color: #FFF;
+          min-width: 95%;
+          outline: none;
+          resize: none;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
 
 
 
 
-    <div class="container-fluid">
+<div class="container-fluid">
     <div class="row" style="background-color:#F8F8F8;">
         <div class="col-7">
             <h2 class="text-center text-dark mt-2 float-end">SHACL Validator</h2>
@@ -105,7 +105,7 @@
                         <!--                        <button type="button" class="btn btn-sm btn-secondary float-end mb-2 add-sample-graph">Add Sample Graph</button>-->
 
                         <select class="form-select w-auto float-end bg-light mb-2" aria-label="Default select example">
-                            <option selected>Add Sample Graph</option>
+                            <option value="0" selected>Add Sample Graph</option>
                             <option value="1">Sample TTL #1</option>
                             <option value="2">Sample XML</option>
                             <option value="3">Sample JSON-LD</option>
@@ -114,13 +114,13 @@
 
                         <div class="input-group" style="height:400px;">
 
-    <div class="editor w-100 h-100">
-      <div class="line-numbers" id="data-line-numbers">
-        <span></span>
-      </div>
-      <textarea id="data-graph-text" autofocus></textarea>
-    </div>
-                                                </div>
+                            <div class="editor w-100 h-100">
+                                <div class="line-numbers" id="data-line-numbers">
+                                    <span></span>
+                                </div>
+                                <textarea id="data-graph-text"></textarea>
+                            </div>
+                        </div>
 
                         <!--                        <textarea class="form-control" name="data-graph-text" id="data-graph-text" rows="18"></textarea>-->
 
@@ -153,7 +153,7 @@
                         </span>
                         <!--                        <button type="button" class="btn btn-sm btn-secondary mb-2 float-end add-sample-graph">Add Sample Graph</button>-->
                         <select class="form-select w-auto float-end bg-light mb-2" aria-label="Default select example">
-                            <option selected>Add Sample Graph</option>
+                            <option value="0" selected>Add Sample Graph</option>
                             <option value="1">Sample #1</option>
                             <option value="2">Sample #2</option>
                             <option value="3">Sample #3</option>
@@ -161,13 +161,13 @@
 
 
                         <div class="input-group" style="height:400px;">
-    <div class="editor w-100 h-100">
-      <div class="line-numbers line-numbers-2" id="shacl-line-numbers">
-        <span></span>
-      </div>
-      <textarea id="shacl-graph-text" class="textarea-2" autofocus></textarea>
-    </div>
+                            <div class="editor w-100 h-100">
+                                <div class="line-numbers" id="shacl-line-numbers">
+                                    <span></span>
+                                </div>
+                                <textarea id="shacl-graph-text" class="textarea-2"></textarea>
                             </div>
+                        </div>
 
                         <!--                        <textarea class="form-control mt-1" name="shacl-graph-text" id="shacl-graph-text" rows="18"></textarea>-->
 
@@ -187,7 +187,7 @@
 </div>
 
 
-    <div class="modal fade" id="modal" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" id="modal-dialog">
         <div class="modal-content" id="success-modal-content">
             <div class="modal-header">
@@ -203,57 +203,42 @@
     </div>
 </div>
 
-    <script>
-      const textarea = document.querySelector('textarea')
-      const lineNumbers = document.querySelector('.line-numbers')
+<script>
+    const textarea = document.querySelectorAll('textarea')
 
-      textarea.addEventListener('keyup', event => {
-        const numberOfLines = event.target.value.split('\n').length
+    textarea.forEach(el => el.addEventListener('keyup', event => {
+      const numberOfLines = event.target.value.split('\n').length
+      var target_id = event.target;
+      var target_line_number = $(target_id).parent().find(".line-numbers");
 
-        lineNumbers.innerHTML = Array(numberOfLines)
-          .fill('<span></span>')
-          .join('')
-      })
-
-      textarea.addEventListener('keydown', event => {
-        if (event.key === 'Tab') {
-          const start = textarea.selectionStart
-          const end = textarea.selectionEnd
-
-          textarea.value = textarea.value.substring(0, start) + '\t' + textarea.value.substring(end)
-          textarea.focus()
-
-          event.preventDefault()
-        }
-      })
-
-
-      const textarea_2 = document.querySelector('#shacl-graph-text')
-      const lineNumbers_2 = document.querySelector('.line-numbers-2')
-
-      textarea_2.addEventListener('keyup', event => {
-        const numberOfLines = event.target.value.split('\n').length
-
-        lineNumbers_2.innerHTML = Array(numberOfLines)
-          .fill('<span></span>')
-          .join('')
-      })
-
-      textarea_2.addEventListener('keydown', event => {
-        if (event.key === 'Tab') {
-          const start = textarea.selectionStart
-          const end = textarea.selectionEnd
-
-          textarea.value = textarea.value.substring(0, start) + '\t' + textarea.value.substring(end)
-          textarea.focus()
-
-          event.preventDefault()
-        }
-      })
-    </script>
+      document.querySelector(`#${target_line_number.attr("id")}`).innerHTML = Array(numberOfLines)
+        .fill('<span></span>')
+        .join('')
+    }));
 
 
 
+    textarea.forEach(el => el.addEventListener('keydown', event => {
+      if (event.key === 'Tab') {
+        const start = event.target.selectionStart
+        const end = event.target.selectionEnd
+
+        event.target.value = event.target.value.substring(0, start) + '\t' + textarea.value.substring(end)
+        event.target.focus()
+
+        event.preventDefault()
+      }
+   }));
+
+    function setLineNumbers(selector, text){
+       var line_numbers = document.querySelector(selector);
+       var line_count = text.split('\n').length;
+       line_numbers.innerHTML = Array(line_count)
+              .fill('<span></span>')
+              .join('')
+
+    }
+</script>
 <script>
     // show pop-ups as a success or error message
     function showErrorMessage(error_message){
@@ -277,22 +262,13 @@
 
     // reset the form if clear button clicked
     $('.clear-button').click(function(){
-       var content_div = $(this).attr("name");
-       $(`#${content_div}`).find("input, textarea").val("").trigger("input");
-       $(`#${content_div}`).find('select').prop('selectedIndex',0);
-
-
-       var line_number_id = $(`#${content_div}`).find(".line-numbers").attr("id");
-
-       var line_numbers = document.querySelector(`#${line_number_id}`);
-       line_numbers.innerHTML = Array(1)
-              .fill('<span></span>')
-              .join('')
-
-       $("textarea").focus();
-
-
-
+       var content_name = $(this).attr("name");
+       var content_div =  $(`#${content_name}`);
+       $(content_div).find("input, textarea").val("").trigger("input");
+       $(content_div).find('select').prop('selectedIndex',0);
+       var line_number_id = $(content_div).find(".line-numbers").attr("id");
+       setLineNumbers(`#${line_number_id}`, "");
+       //  $("textarea").focus();
     });
 
      $('select').on('change', '', function (e) {
@@ -333,15 +309,8 @@
        parent_text_area.val(file_contents);
 
        var line_number_id = $(this).parent().find(".line-numbers").attr("id");
-
-       var file_len = file_contents.split('\n').length;
-       var line_numbers = document.querySelector(`#${line_number_id}`);
-       line_numbers.innerHTML = Array(file_len)
-              .fill('<span></span>')
-              .join('')
-
-       $("textarea").focus();
-
+       setLineNumbers(`#${line_number_id}`, file_contents);
+       // $("textarea").focus();
     });
 
     $('.add-sample-graph').click(function(){
@@ -433,10 +402,10 @@
                var shacl_result_graph = response["results_graph"];
                if (shacl_conformance == false) {
                    var shacl_results_html = `
-                    <p>The Graph generated <strong>Failed SHACL Validation</strong>.
+                    <p>The RDF Graph uploaded <strong>failed SHACL Validation</strong>.
                     The following SHACL Validation Report was generated:</p>
                     <pre class="py-2 alert alert-danger">${shacl_result_text}</pre>
-                    <p>The report is represented using the <a href="https://www.w3.org/TR/shacl/#dfn-validation-report-vocabulary" target="_blank"> SHACL Validation Report Vocabulary.</a>  </p>
+                    <p>The Validation Report is expressed in the <a href="https://www.w3.org/TR/shacl/#dfn-validation-report-vocabulary" target="_blank"> SHACL Validation Report Vocabulary.</a>  </p>
                   `;
                    $("#modal-dialog").addClass("modal-xl");
                    var download_button = '<a id="download-button" class="btn btn-success  mx-auto mb-3 w-25">Download Report (.ttl)</a>';
@@ -462,9 +431,14 @@
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     })
+
+    $(document).ready(function(){
+        setLineNumbers("#data-line-numbers", $("#shacl-graph-text").val());
+        setLineNumbers("#data-line-numbers", $("#data-graph-text").val());
+    });
 </script>
 
 
 
-  </body>
+</body>
 </html>
