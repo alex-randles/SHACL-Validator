@@ -269,14 +269,12 @@
        var line_number_id = $(content_div).find(".line-numbers").attr("id");
        setLineNumbers(`#${line_number_id}`, "");
 
-var scroll_div = $(content_div).find('.editor');
-$(scroll_div).scrollTop(0);
-
-
-       //  $("textarea").focus();
+       // scroll back to top of div
+       var scroll_div = $(content_div).find('.editor');
+       $(scroll_div).scrollTop(0);
     });
 
-     $('select').on('change', '', function (e) {
+     $('select').on('change', function (e) {
        var parent_text_area = $(this).parent().find("textarea");
        $(this).parent().find("input, textarea").val("");
        var text_area_name = $(parent_text_area).attr("id");
