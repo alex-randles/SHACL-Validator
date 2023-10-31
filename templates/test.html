@@ -115,10 +115,10 @@
                         <div class="input-group" style="height:400px;">
 
     <div class="editor w-100 h-100">
-      <div class="line-numbers">
+      <div class="line-numbers" id="data-line-numbers">
         <span></span>
       </div>
-      <textarea id="data-graph-text" rows="18"></textarea>
+      <textarea id="data-graph-text" autofocus></textarea>
     </div>
                                                 </div>
 
@@ -162,10 +162,10 @@
 
                         <div class="input-group" style="height:400px;">
     <div class="editor w-100 h-100">
-      <div class="line-numbers line-numbers-2">
+      <div class="line-numbers line-numbers-2" id="shacl-line-numbers">
         <span></span>
       </div>
-      <textarea id="shacl-graph-text" class="textarea-2"></textarea>
+      <textarea id="shacl-graph-text" class="textarea-2" autofocus></textarea>
     </div>
                             </div>
 
@@ -280,8 +280,20 @@
        var content_div = $(this).attr("name");
        $(`#${content_div}`).find("input, textarea").val("").trigger("input");
        $(`#${content_div}`).find('select').prop('selectedIndex',0);
-    });
 
+
+       var line_number_id = $(`#${content_div}`).find(".line-numbers").attr("id");
+
+       var line_numbers = document.querySelector(`#${line_number_id}`);
+       line_numbers.innerHTML = Array(1)
+              .fill('<span></span>')
+              .join('')
+
+       $("textarea").focus();
+
+
+
+    });
 
      $('select').on('change', '', function (e) {
        var parent_text_area = $(this).parent().find("textarea");
@@ -320,12 +332,15 @@
        }
        parent_text_area.val(file_contents);
 
+       var line_number_id = $(this).parent().find(".line-numbers").attr("id");
 
-var element = document.createElement("textarea");
-element.dispatchEvent(new KeyboardEvent('keydown',{'key':'q'}));
+       var file_len = file_contents.split('\n').length;
+       var line_numbers = document.querySelector(`#${line_number_id}`);
+       line_numbers.innerHTML = Array(file_len)
+              .fill('<span></span>')
+              .join('')
 
-       parent_text_area.focus()
-
+       $("textarea").focus();
 
     });
 
