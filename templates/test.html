@@ -114,7 +114,7 @@
 
                         <div class="input-group" style="height:400px;">
 
-                            <div class="editor w-100 h-100">
+                            <div class="editor w-100 h-100" id="data-scroll">
                                 <div class="line-numbers" id="data-line-numbers">
                                     <span></span>
                                 </div>
@@ -161,7 +161,7 @@
 
 
                         <div class="input-group" style="height:400px;">
-                            <div class="editor w-100 h-100">
+                            <div class="editor w-100 h-100" id="shacl-scroll">
                                 <div class="line-numbers" id="shacl-line-numbers">
                                     <span></span>
                                 </div>
@@ -268,6 +268,11 @@
        $(content_div).find('select').prop('selectedIndex',0);
        var line_number_id = $(content_div).find(".line-numbers").attr("id");
        setLineNumbers(`#${line_number_id}`, "");
+
+var scroll_div = $(content_div).find('.editor');
+$(scroll_div).scrollTop(0);
+
+
        //  $("textarea").focus();
     });
 
@@ -327,8 +332,8 @@
 </script>
 <script>
     function validateUploadForm(){
-        var valid_form = true;
         // check if only one input provided for Data and SHACL graph
+        var valid_form = true;
         var div_id = ["Data-Graph", "SHACL-Graph"];
         var input_count = 0;
         for (let i = 0; i < div_id.length; i++) {
