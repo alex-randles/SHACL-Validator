@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHACL Validator - Home</title>
     <!--    import bootstrap and jQuery -->
@@ -11,10 +12,54 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='homepage_favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-</head>
-<body>
-<!--container for upload form fields -->
-<div class="container-fluid">
+    <style>
+      .editor {
+        display: inline-flex;
+        gap: 10px;
+        font-family: monospace;
+        line-height: 21px;
+        background: white;
+        border-radius: 2px;
+        padding: 20px 10px;
+        height: 200px;
+        overflow-y: auto;
+      }
+
+      .line-numbers {
+        width: auto;
+        text-align: right;
+        height: 9999px;
+      }
+
+      .line-numbers span {
+        counter-increment:  linenumber;
+      }
+
+      .line-numbers span::before {
+        content: counter(linenumber);
+        display: block;
+      }
+
+      textarea {
+        height: 9999px;
+        line-height: 21px;
+        overflow-y: hidden;
+        padding: 0;
+        border: 0;
+       // background: #282a3a;
+       // color: #FFF;
+        min-width: 850px;
+        outline: none;
+        resize: none;
+      }
+    </style>
+  </head>
+  <body>
+
+
+
+
+    <div class="container-fluid">
     <div class="row" style="background-color:#F8F8F8;">
         <div class="col-7">
             <h2 class="text-center text-dark mt-2 float-end">SHACL Validator</h2>
@@ -66,10 +111,16 @@
                             <option value="3">Sample JSON-LD</option>
                             <option value="4">Sample TTL #2</option>
                         </select>
-                        <div class="container__box input-group" style="overflow:hidden;">
-                            <div id="data-line-numbers" class="container__lines pe-2"></div>
-                            <textarea id="data-graph-text" class="container__textarea" name="data-graph-text" rows="19" style="resize:none;max-width:95%;"></textarea>
-                        </div>
+
+                        <div class="input-group" style="height:400px;">
+
+    <div class="editor w-100 h-100">
+      <div class="line-numbers">
+        <span></span>
+      </div>
+      <textarea id="data-graph-text" rows="18"></textarea>
+    </div>
+                                                </div>
 
                         <!--                        <textarea class="form-control" name="data-graph-text" id="data-graph-text" rows="18"></textarea>-->
 
@@ -107,10 +158,16 @@
                             <option value="2">Sample #2</option>
                             <option value="3">Sample #3</option>
                         </select>
-                        <div class="container__box input-group" style="overflow:hidden;">
-                            <div id="shacl-line-numbers" class="container__lines pe-2"></div>
-                            <textarea id="shacl-graph-text" class="container__textarea" name="shacl-graph-text" rows="19" style="resize:none;max-width:95%;"></textarea>
-                        </div>
+
+
+                        <div class="input-group" style="height:400px;">
+    <div class="editor w-100 h-100">
+      <div class="line-numbers line-numbers-2">
+        <span></span>
+      </div>
+      <textarea id="shacl-graph-text" class="textarea-2"></textarea>
+    </div>
+                            </div>
 
                         <!--                        <textarea class="form-control mt-1" name="shacl-graph-text" id="shacl-graph-text" rows="18"></textarea>-->
 
@@ -129,7 +186,8 @@
     </form>
 </div>
 
-<div class="modal fade" id="modal" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    <div class="modal fade" id="modal" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" id="modal-dialog">
         <div class="modal-content" id="success-modal-content">
             <div class="modal-header">
@@ -145,9 +203,55 @@
     </div>
 </div>
 
+    <script>
+      const textarea = document.querySelector('textarea')
+      const lineNumbers = document.querySelector('.line-numbers')
 
-</body>
-</html>
+      textarea.addEventListener('keyup', event => {
+        const numberOfLines = event.target.value.split('\n').length
+
+        lineNumbers.innerHTML = Array(numberOfLines)
+          .fill('<span></span>')
+          .join('')
+      })
+
+      textarea.addEventListener('keydown', event => {
+        if (event.key === 'Tab') {
+          const start = textarea.selectionStart
+          const end = textarea.selectionEnd
+
+          textarea.value = textarea.value.substring(0, start) + '\t' + textarea.value.substring(end)
+          textarea.focus()
+
+          event.preventDefault()
+        }
+      })
+
+
+      const textarea_2 = document.querySelector('#shacl-graph-text')
+      const lineNumbers_2 = document.querySelector('.line-numbers-2')
+
+      textarea_2.addEventListener('keyup', event => {
+        const numberOfLines = event.target.value.split('\n').length
+
+        lineNumbers_2.innerHTML = Array(numberOfLines)
+          .fill('<span></span>')
+          .join('')
+      })
+
+      textarea_2.addEventListener('keydown', event => {
+        if (event.key === 'Tab') {
+          const start = textarea.selectionStart
+          const end = textarea.selectionEnd
+
+          textarea.value = textarea.value.substring(0, start) + '\t' + textarea.value.substring(end)
+          textarea.focus()
+
+          event.preventDefault()
+        }
+      })
+    </script>
+
 
 
 <script>
@@ -182,7 +286,7 @@
      $('select').on('change', '', function (e) {
        var parent_text_area = $(this).parent().find("textarea");
        $(this).parent().find("input, textarea").val("");
-       var text_area_name = $(this).parent().find("textarea").attr("name");
+       var text_area_name = $(parent_text_area).attr("id");
        var selected_graph = $(this).val();
        if (text_area_name == "shacl-graph-text") {
            if (selected_graph == "0") {
@@ -214,7 +318,15 @@
                 var file_contents  = `{{ open("sample-graphs/data-graphs/graph_4.ttl", "r+").read() | safe}}`;
            }
        }
-       parent_text_area.val(file_contents).trigger("input");
+       parent_text_area.val(file_contents);
+
+
+var element = document.createElement("textarea");
+element.dispatchEvent(new KeyboardEvent('keydown',{'key':'q'}));
+
+       parent_text_area.focus()
+
+
     });
 
     $('.add-sample-graph').click(function(){
@@ -336,36 +448,8 @@
         $('[data-toggle="tooltip"]').tooltip()
     })
 </script>
-<script>
-    // initialize variables to track line numbers
-    var textarea;
-    var lineNumbersEle;
 
-    // add line numbers to textarea
-    var displayLineNumbers = () => {
-        var lines = textarea.value.split('\n');
-        lineNumbersEle.innerHTML = Array.from({
-            length: lines.length,
-        }, (_, i) => `<div style="white-space: nowrap;">${i + 1}</div>`).join('');
 
-        if (lines.length > 19) {
-            var margin = (lines.length - 19) * 3;
-            lineNumbersEle.style = `max-width: 5%; height: 464px;margin-top:-${margin}%;`;
-        } else {
-           lineNumbersEle.style = "max-width: 5%; height: 464px;";
-        }
-    }
 
-    // detect changes to lines in textarea
-    $("textarea").on('propertychange input', function (e) {
-        var textarea_id = $(this).attr("id");
-        textarea = document.getElementById(textarea_id);
-        var line_numbers_id = $(this).parent().find(".container__lines").attr("id");
-        lineNumbersEle = document.getElementById(line_numbers_id);
-        displayLineNumbers();
-    });
-
-    // initialize line numbers
-    $("textarea").trigger("input");
-
-</script>
+  </body>
+</html>

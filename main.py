@@ -15,7 +15,7 @@ def index():
     if request.method == "GET":
         # returns the initial view displayed
         return render_template(
-            "index.html",
+            "test.html",
             open=open,
         )
 
