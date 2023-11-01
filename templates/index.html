@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHACL Validator - Home</title>
     <!--    import bootstrap and jQuery -->
@@ -13,21 +14,17 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
 <body>
-<!--container for upload form fields -->
 <div class="container-fluid">
     <div class="row" style="background-color:#F8F8F8;">
         <div class="col-7">
             <h2 class="text-center text-dark mt-2 float-end">SHACL Validator</h2>
-
         </div>
         <div class="col-5 my-auto">
-            <a href="" class="float-end text-decoration-none text-muted fw-normal" target="_blank">
+            <a href="https://drive.google.com/file/d/1TWAlwtjiKhlt-SnvcxPx4HLDwNxJB2rE" class="float-end text-decoration-none text-muted fw-normal" target="_blank">
                 <span class="bi bi-play-btn btn-lg btn">
                     Video Demo
                 </span>
-
             </a>
-
         </div>
     </div>
     <div class="row text-center mt-3">
@@ -57,22 +54,22 @@
                             <label for="data-graph-text" class="form-label">Paste RDF Data</label>
                             <i data-toggle="tooltip" data-placement="top" title="RDF Data to be validated" class="bi bi-info-circle ms-2"></i>
                         </span>
-                        <!--                        <button type="button" class="btn btn-sm btn-secondary float-end mb-2 add-sample-graph">Add Sample Graph</button>-->
-
                         <select class="form-select w-auto float-end bg-light mb-2" aria-label="Default select example">
-                            <option selected>Add Sample Graph</option>
+                            <option value="0" selected>Add Sample Graph</option>
                             <option value="1">Sample TTL #1</option>
                             <option value="2">Sample XML</option>
                             <option value="3">Sample JSON-LD</option>
                             <option value="4">Sample TTL #2</option>
                         </select>
-                        <div class="container__box input-group" style="overflow:hidden;">
-                            <div id="data-line-numbers" class="container__lines pe-2"></div>
-                            <textarea id="data-graph-text" class="container__textarea" name="data-graph-text" rows="19" style="resize:none;max-width:95%;"></textarea>
+                        <div class="input-group" style="height:400px;">
+
+                            <div class="editor w-100 h-100" id="data-scroll">
+                                <div class="line-numbers" id="data-line-numbers">
+                                    <span></span>
+                                </div>
+                                <textarea id="data-graph-text"></textarea>
+                            </div>
                         </div>
-
-                        <!--                        <textarea class="form-control" name="data-graph-text" id="data-graph-text" rows="18"></textarea>-->
-
                     </div>
                 </div>
             </div>
@@ -100,20 +97,20 @@
                             <label for="shacl-graph-text" class="form-label">Paste RDF Data</label>
                             <i data-toggle="tooltip" data-placement="top" title="RDF Data to be validated" class="bi bi-info-circle ms-2"></i>
                         </span>
-                        <!--                        <button type="button" class="btn btn-sm btn-secondary mb-2 float-end add-sample-graph">Add Sample Graph</button>-->
                         <select class="form-select w-auto float-end bg-light mb-2" aria-label="Default select example">
-                            <option selected>Add Sample Graph</option>
+                            <option value="0" selected>Add Sample Graph</option>
                             <option value="1">Sample #1</option>
                             <option value="2">Sample #2</option>
                             <option value="3">Sample #3</option>
                         </select>
-                        <div class="container__box input-group" style="overflow:hidden;">
-                            <div id="shacl-line-numbers" class="container__lines pe-2"></div>
-                            <textarea id="shacl-graph-text" class="container__textarea" name="shacl-graph-text" rows="19" style="resize:none;max-width:95%;"></textarea>
+                        <div class="input-group" style="height:400px;">
+                            <div class="editor w-100 h-100" id="shacl-scroll">
+                                <div class="line-numbers" id="shacl-line-numbers">
+                                    <span></span>
+                                </div>
+                                <textarea id="shacl-graph-text" class="textarea-2"></textarea>
+                            </div>
                         </div>
-
-                        <!--                        <textarea class="form-control mt-1" name="shacl-graph-text" id="shacl-graph-text" rows="18"></textarea>-->
-
                     </div>
                 </div>
             </div>
@@ -128,6 +125,7 @@
         </div>
     </form>
 </div>
+
 
 <div class="modal fade" id="modal" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" id="modal-dialog">
@@ -145,12 +143,40 @@
     </div>
 </div>
 
-
-</body>
-</html>
-
-
 <script>
+    const textarea = document.querySelectorAll('textarea')
+
+    textarea.forEach(el => el.addEventListener('keyup', event => {
+      const numberOfLines = event.target.value.split('\n').length
+      var target_id = event.target;
+      var target_line_number = $(target_id).parent().find(".line-numbers");
+
+      document.querySelector(`#${target_line_number.attr("id")}`).innerHTML = Array(numberOfLines)
+        .fill('<span></span>')
+        .join('')
+    }));
+
+    textarea.forEach(el => el.addEventListener('keydown', event => {
+      if (event.key === 'Tab') {
+        const start = event.target.selectionStart
+        const end = event.target.selectionEnd
+
+        event.target.value = event.target.value.substring(0, start) + '\t' + textarea.value.substring(end)
+        event.target.focus()
+
+        event.preventDefault()
+      }
+   }));
+
+    function setLineNumbers(selector, text){
+       var line_numbers = document.querySelector(selector);
+       var line_count = text.split('\n').length;
+       line_numbers.innerHTML = Array(line_count)
+              .fill('<span></span>')
+              .join('')
+
+    }
+
     // show pop-ups as a success or error message
     function showErrorMessage(error_message){
          $("#modal-title").addClass("text-danger").removeClass("text-success").text("Error");
@@ -162,8 +188,8 @@
          $("#modal-body").html(success_message);
          $("#modal").modal("show");
     }
-</script>
-<script>
+
+
     // turn button into spinner when pressed
     $(document.body).on('click', '.spinner-buttonsssssss' ,function(e){
           $(this).css("pointer-events", "none");
@@ -173,16 +199,22 @@
 
     // reset the form if clear button clicked
     $('.clear-button').click(function(){
-       var content_div = $(this).attr("name");
-       $(`#${content_div}`).find("input, textarea").val("").trigger("input");
-       $(`#${content_div}`).find('select').prop('selectedIndex',0);
+       var content_name = $(this).attr("name");
+       var content_div =  $(`#${content_name}`);
+       $(content_div).find("input, textarea").val("").trigger("input");
+       $(content_div).find('select').prop('selectedIndex',0);
+       var line_number_id = $(content_div).find(".line-numbers").attr("id");
+       setLineNumbers(`#${line_number_id}`, "");
+
+       // scroll back to top of div
+       var scroll_div = $(content_div).find('.editor');
+       $(scroll_div).scrollTop(0);
     });
 
-
-     $('select').on('change', '', function (e) {
+     $('select').on('change', function (e) {
        var parent_text_area = $(this).parent().find("textarea");
        $(this).parent().find("input, textarea").val("");
-       var text_area_name = $(this).parent().find("textarea").attr("name");
+       var text_area_name = $(parent_text_area).attr("id");
        var selected_graph = $(this).val();
        if (text_area_name == "shacl-graph-text") {
            if (selected_graph == "0") {
@@ -214,7 +246,11 @@
                 var file_contents  = `{{ open("sample-graphs/data-graphs/graph_4.ttl", "r+").read() | safe}}`;
            }
        }
-       parent_text_area.val(file_contents).trigger("input");
+       parent_text_area.val(file_contents);
+
+       var line_number_id = $(this).parent().find(".line-numbers").attr("id");
+       setLineNumbers(`#${line_number_id}`, file_contents);
+       // $("textarea").focus();
     });
 
     $('.add-sample-graph').click(function(){
@@ -228,11 +264,10 @@
        }
        parent_text_area.val(file_contents).trigger("input");
     });
-</script>
-<script>
+
     function validateUploadForm(){
-        var valid_form = true;
         // check if only one input provided for Data and SHACL graph
+        var valid_form = true;
         var div_id = ["Data-Graph", "SHACL-Graph"];
         var input_count = 0;
         for (let i = 0; i < div_id.length; i++) {
@@ -259,8 +294,7 @@
         }
         return valid_form;
     }
-</script>
-<script>
+
     $(document).on('submit','#upload-form',function(e) {
         e.preventDefault();
         $("#download-button").remove();
@@ -306,10 +340,10 @@
                var shacl_result_graph = response["results_graph"];
                if (shacl_conformance == false) {
                    var shacl_results_html = `
-                    <p>The Graph generated <strong>Failed SHACL Validation</strong>.
+                    <p>The RDF Graph uploaded <strong>failed SHACL Validation</strong>.
                     The following SHACL Validation Report was generated:</p>
                     <pre class="py-2 alert alert-danger">${shacl_result_text}</pre>
-                    <p>The report is represented using the <a href="https://www.w3.org/TR/shacl/#dfn-validation-report-vocabulary" target="_blank"> SHACL Validation Report Vocabulary.</a>  </p>
+                    <p>The Validation Report is expressed in the <a href="https://www.w3.org/TR/shacl/#dfn-validation-report-vocabulary" target="_blank"> SHACL Validation Report Vocabulary.</a>  </p>
                   `;
                    $("#modal-dialog").addClass("modal-xl");
                    var download_button = '<a id="download-button" class="btn btn-success  mx-auto mb-3 w-25">Download Report (.ttl)</a>';
@@ -329,43 +363,18 @@
             }
        })
     });
-</script>
-<script>
+
     // initialize tool tips
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     })
-</script>
-<script>
-    // initialize variables to track line numbers
-    var textarea;
-    var lineNumbersEle;
 
-    // add line numbers to textarea
-    var displayLineNumbers = () => {
-        var lines = textarea.value.split('\n');
-        lineNumbersEle.innerHTML = Array.from({
-            length: lines.length,
-        }, (_, i) => `<div style="white-space: nowrap;">${i + 1}</div>`).join('');
-
-        if (lines.length > 19) {
-            var margin = (lines.length - 19) * 3;
-            lineNumbersEle.style = `max-width: 5%; height: 464px;margin-top:-${margin}%;`;
-        } else {
-           lineNumbersEle.style = "max-width: 5%; height: 464px;";
-        }
-    }
-
-    // detect changes to lines in textarea
-    $("textarea").on('propertychange input', function (e) {
-        var textarea_id = $(this).attr("id");
-        textarea = document.getElementById(textarea_id);
-        var line_numbers_id = $(this).parent().find(".container__lines").attr("id");
-        lineNumbersEle = document.getElementById(line_numbers_id);
-        displayLineNumbers();
+    $(document).ready(function(){
+        setLineNumbers("#data-line-numbers", $("#shacl-graph-text").val());
+        setLineNumbers("#data-line-numbers", $("#data-graph-text").val());
     });
-
-    // initialize line numbers
-    $("textarea").trigger("input");
-
 </script>
+
+
+</body>
+</html>

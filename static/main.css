@@ -1,13 +1,39 @@
-.container__box {
-    width:100%;
-    height:90%;
-    display: flex;
-    border: 1px solid rgb(203 213 225);
+.editor {
+  display: inline-flex;
+  gap: 10px;
+  font-family: monospace;
+  line-height: 21px;
+  background: white;
+  border-radius: 2px;
+  padding: 20px 10px;
+  height: 200px;
+  overflow-y: auto;
 }
-.container__textarea {
-    width: 96%;
-    border: none;
+
+.line-numbers {
+  width: auto;
+  text-align: right;
+  height: 9999px;
 }
-.container__lines {
-    border-right: 1px solid rgb(203 213 225);
+
+.line-numbers span {
+  counter-increment:  linenumber;
+}
+
+.line-numbers span::before {
+  content: counter(linenumber);
+  display: block;
+}
+
+textarea {
+  height: 9999px;
+  line-height: 21px;
+  overflow-y: hidden;
+  padding: 0;
+  border: 0;
+ // background: #282a3a;
+ // color: #FFF;
+  min-width: 95%;
+  outline: none;
+  resize: none;
 }

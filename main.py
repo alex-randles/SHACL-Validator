@@ -15,7 +15,7 @@ def index():
     if request.method == "GET":
         # returns the initial view displayed
         return render_template(
-            "test.html",
+            "index.html",
             open=open,
         )
 
@@ -33,6 +33,7 @@ def load_rdflib_graph(rdf_string, raw_rdf_data=False, file_format="ttl"):
         print(f"Exception loading graph: {e}")
         return str(e)
 
+
 def get_graph_format(graph_text):
     # outputs the format of a graph based on common strings used
     file_formats = {
@@ -44,6 +45,7 @@ def get_graph_format(graph_text):
             if value in graph_text:
                 return file_format
     return "ttl"
+
 
 @app.route('/execute-shacl-shape', methods=["GET", "POST"])
 def execute_shacl_shape():
