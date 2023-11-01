@@ -67,19 +67,12 @@ def execute_shacl_shape():
                 return {"error_message": shacl_graph, "error_banner": "SHACL Graph has Incorrect Syntax!"}
         data_graph_file = request.files.get('data-graph-file')
         if data_graph_file != "undefined" and data_graph_file:
-            # print(data_graph_file)
-            # if not data_graph_file.filename.endswith((".xml", ".ttl", ".json")):
-                # return {"error_message": "Data Graph File must be Turtle (.ttl)", "error_banner": "Incorrect File Type!"}
-            # if ".owl" in data_graph_file.filename or ".xml" in data_graph_file.filename:
-            #     file_format = "xml"
             file_format = rdflib.util.guess_format(data_graph_file.filename)
             data_graph = load_rdflib_graph(data_graph_file.read().decode("utf-8"), raw_rdf_data=True, file_format=file_format)
             if not data_graph:
                 return {"error_message": "Data Graph could not be parsed!"}
         shacl_graph_file = request.files.get('shacl-graph-file')
         if shacl_graph_file != "undefined" and shacl_graph_file:
-            # if not shacl_graph_file.filename.endswith(".ttl"):
-            #     return {"error_message": "SHACL Graph File must be Turtle (.ttl)"}
             shacl_graph = load_rdflib_graph(shacl_graph_file.read().decode("utf-8"), raw_rdf_data=True)
             if isinstance(shacl_graph, str):
                 return {"error_message": shacl_graph, "error_banner": "SHACL Graph has Incorrect Syntax!"}
