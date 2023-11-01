@@ -305,12 +305,12 @@
         }
         var shacl_filename =  $('#shacl-graph-file').val();
         if (shacl_filename && !shacl_filename.endsWith(".ttl")) {
-             showErrorMessage("SHACL Graph File Type Error!");
+             showErrorMessage("SHACL Graph File Type Error! <br><br> File must be Turtle format (.ttl)");
              return false;
         }
         var data_filename =  $('#data-graph-file').val();
         if (data_filename && !data_filename.match(/(ttl|owl|xml|jsonld)$/)) {
-             showErrorMessage("Data Graph File Type Error!");
+             showErrorMessage("Data Graph File Type Error! <br><br> File must be .ttl, .owl, .xml or .jsonld");
              return false;
         }
         var form_data = new FormData();
