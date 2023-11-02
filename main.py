@@ -9,9 +9,9 @@ app.config['UPLOAD_FOLDER'] = "uploads"
 app.config['FILE_COUNT'] = 0
 
 
-# the main endpoint for the interface
 @app.route('/', methods=["GET", "POST"])
 def index():
+    # the main endpoint for the interface
     if request.method == "GET":
         # returns the initial view displayed
         return render_template(
@@ -21,7 +21,7 @@ def index():
 
 
 def load_rdflib_graph(rdf_string, raw_rdf_data=False, file_format="ttl"):
-    # load RDF string or file and capture errors
+    # load RDF string, file or uri and capture errors
     try:
         print(f"File format: {file_format}")
         if raw_rdf_data:
@@ -52,9 +52,11 @@ def execute_shacl_shape():
     if request.method == "POST":
         form_data = request.form
         print(form_data)
+        # set variables to store graphs and set default graph format to turtle
         shacl_graph, data_graph, file_format = None, None, "ttl"
         data_graph_text = form_data.get("data-graph-text")
         shacl_graph_text = form_data.get("shacl-graph-text")
+        # check if graphs provided via text boxes
         if data_graph_text:
             file_format = get_graph_format(data_graph_text)
             data_graph = load_rdflib_graph(data_graph_text, raw_rdf_data=True, file_format=file_format)
@@ -65,6 +67,7 @@ def execute_shacl_shape():
             shacl_graph = load_rdflib_graph(shacl_graph_text, raw_rdf_data=True, file_format=file_format)
             if isinstance(shacl_graph, str):
                 return {"error_message": shacl_graph, "error_banner": "SHACL Graph has Incorrect Syntax!"}
+        # check if graph files were uploaded
         data_graph_file = request.files.get('data-graph-file')
         if data_graph_file != "undefined" and data_graph_file:
             file_format = rdflib.util.guess_format(data_graph_file.filename)
@@ -76,6 +79,7 @@ def execute_shacl_shape():
             shacl_graph = load_rdflib_graph(shacl_graph_file.read().decode("utf-8"), raw_rdf_data=True)
             if isinstance(shacl_graph, str):
                 return {"error_message": shacl_graph, "error_banner": "SHACL Graph has Incorrect Syntax!"}
+        # check if graphs provided via uri's
         data_graph_uri = form_data.get("data-graph-uri")
         shacl_graph_uri = form_data.get("shacl-graph-uri")
         if data_graph_uri:
@@ -97,6 +101,7 @@ def execute_shacl_shape():
                 else:
                     error_banner = "SHACL Graph has Incorrect Syntax!"
                 return {"error_message": shacl_graph, "error_banner": error_banner}
+        # validate graphs if successfully parsed  - else return None
         if shacl_graph and data_graph:
             print(f'Data graph loaded:\n {data_graph.serialize(format="ttl")}')
             print(f'SHACL graph loaded:\n {shacl_graph.serialize(format="ttl")}')
@@ -114,6 +119,7 @@ def execute_shacl_shape():
 
 @app.errorhandler(Exception)
 def error(exception):
+    # captures exception not caught
     print(exception)
     return render_template("error.html")
 
