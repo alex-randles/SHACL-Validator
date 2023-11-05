@@ -87,8 +87,8 @@ def execute_shacl_shape():
             data_graph = load_rdflib_graph(data_graph_uri, file_format=file_format)
             print(data_graph_uri)
             if not data_graph:
-                if "HTTP Error 404" in data_graph:
-                    error_banner = "File could not be retrieved!"
+                if "HTTP Error 404" in data_graph or "urlopen error" in data_graph:
+                    error_banner = "Data File could not be retrieved!"
                 else:
                     error_banner = "SHACL Graph has Incorrect Syntax!"
                 return {"error_message": data_graph, "error_banner": error_banner}
@@ -96,8 +96,8 @@ def execute_shacl_shape():
             file_format = rdflib.util.guess_format(shacl_graph_uri)
             shacl_graph = load_rdflib_graph(shacl_graph_uri, file_format=file_format)
             if isinstance(shacl_graph, str):
-                if "HTTP Error 404" in shacl_graph:
-                    error_banner = "File could not be retrieved!"
+                if "HTTP Error 404" in shacl_graph or "urlopen error" in shacl_graph:
+                    error_banner = "SHACL File could not be retrieved!"
                 else:
                     error_banner = "SHACL Graph has Incorrect Syntax!"
                 return {"error_message": shacl_graph, "error_banner": error_banner}
