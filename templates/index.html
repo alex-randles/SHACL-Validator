@@ -336,7 +336,7 @@
                error_message = response["error_message"];
                if (error_message) {
                   var error_banner = response["error_banner"];
-                  var error_message_html = `<p>${error_banner}</p> <div class="alert alert-danger">${error_message.replace("<", " ").replace(">", " ")}</div> <p>Turtle RDF can be validated at the following <a href="http://ttl.summerofcode.be/" target="_blank">Link</a> </p>`;
+                  var error_message_html = `<p>${error_banner}</p> <div class="alert alert-danger">${error_message.replaceAll("<", " ").replaceAll(">", " ")}</div> <p>Turtle RDF can be validated at the following <a href="http://ttl.summerofcode.be/" target="_blank">Link</a> </p>`;
                   showErrorMessage(error_message_html);
                   return false;
                }

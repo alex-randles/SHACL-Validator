@@ -23,10 +23,10 @@ The application can be started using the following command: `python3 main.py`
 
 The interface of the application will run on localhost port 5000 by default [127.0.0.1:5000](http://127.0.0.1:5000).
 
-The port can be configured on line 123 of `main.py` by changing the respective variable `app.run(debug=True, host="127.0.0.1", port=5000, threaded=True)`
+The port can be configured on line 129 of `main.py` by changing the respective variable `app.run(debug=True, host="127.0.0.1", port=5000, threaded=True)`
 
-### Sample Mappings 
-Sample SHACL constraints and Data Graphs can be found in the (./sample-graphs) directory. 
+### Sample Graphs 
+Sample SHACL constraints and Data Graphs can be found in the [./sample-graphs](./sample-graphs) directory. 
 
 ### Video Demonstration
 A video demonstration of the application can be found here: https://drive.google.com/file/d/1p-0GlLAd1tWJ3y8K4fLZ2VAIxGQltbpA
