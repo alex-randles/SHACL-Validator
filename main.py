@@ -72,8 +72,8 @@ def execute_shacl_shape():
         if data_graph_file != "undefined" and data_graph_file:
             file_format = rdflib.util.guess_format(data_graph_file.filename)
             data_graph = load_rdflib_graph(data_graph_file.read().decode("utf-8"), raw_rdf_data=True, file_format=file_format)
-            if not data_graph:
-                return {"error_message": "Data Graph could not be parsed!"}
+            if isinstance(data_graph, str):
+                return {"error_message": data_graph, "error_banner": "Data Graph has Incorrect Syntax!"}
         shacl_graph_file = request.files.get('shacl-graph-file')
         if shacl_graph_file != "undefined" and shacl_graph_file:
             shacl_graph = load_rdflib_graph(shacl_graph_file.read().decode("utf-8"), raw_rdf_data=True)

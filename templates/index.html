@@ -38,7 +38,7 @@
                     <div class="card-body">
                         <p class="card-text">Please upload the Data Graph using only <strong>one</strong> of the below options</p>
                         <div class="input-group mb-3 w-75">
-                            <input class="form-control" type="file" name="data-graph-file" id="data-graph-file" accept=".ttl, .xml, .owl, .jsonld">
+                            <input class="form-control" type="file" name="data-graph-file" id="data-graph-file" accept=".ttl, .xml, .owl, .jsonld, .nq">
                             <span class="input-group-text">
                             <i data-toggle="tooltip" data-placement="top" title="RDF File to be validated" class="bi bi-info-circle"></i>
                         </span>
@@ -309,8 +309,8 @@
              return false;
         }
         var data_filename =  $('#data-graph-file').val();
-        if (data_filename && !data_filename.match(/(ttl|owl|xml|jsonld)$/)) {
-             showErrorMessage("Data Graph File Type Error! <br><br> File must be .ttl, .owl, .xml or .jsonld");
+        if (data_filename && !data_filename.match(/(ttl|owl|xml|jsonld|nq)$/)) {
+             showErrorMessage("Data Graph File Type Error! <br><br> File must be .ttl, .owl, .xml, .nq or .jsonld");
              return false;
         }
         var form_data = new FormData();
@@ -370,7 +370,7 @@
     })
 
     $(document).ready(function(){
-        setLineNumbers("#data-line-numbers", $("#shacl-graph-text").val());
+        setLineNumbers("#shacl-line-numbers", $("#shacl-graph-text").val());
         setLineNumbers("#data-line-numbers", $("#data-graph-text").val());
     });
 </script>
