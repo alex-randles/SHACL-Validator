@@ -28,5 +28,7 @@ The port can be configured on line 129 of `main.py` by changing the respective v
 ### Sample Graphs 
 Sample SHACL constraints and Data Graphs can be found in the [./sample-graphs](./sample-graphs) directory. 
 
+Make sure to provide the links for **GitHub [Raw Content](https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-a-file)** when providing a file path for a graph.
+
 ### Video Demonstration
 A video demonstration of the application can be found here: https://drive.google.com/file/d/1p-0GlLAd1tWJ3y8K4fLZ2VAIxGQltbpA
