@@ -193,14 +193,6 @@
          $("#modal").modal("show");
     }
 
-
-    // turn button into spinner when pressed
-    $(document.body).on('click', '.spinner-buttonsssssss' ,function(e){
-          $(this).css("pointer-events", "none");
-          $(this).text("");
-          $(this).attr("class", "spinner-border");
-    });
-
     // reset the form if clear button clicked
     $('.clear-button').click(function(){
        var content_name = $(this).attr("name");
@@ -217,7 +209,6 @@
 
      $('select').on('change', function (e) {
        var parent_text_area = $(this).parent().find("textarea");
-       $(this).parent().find("input, textarea").val("");
        var text_area_name = $(parent_text_area).attr("id");
        var selected_graph = $(this).val();
        if (text_area_name == "shacl-graph-text") {
@@ -250,24 +241,14 @@
                 var file_contents  = `{{ open("sample-graphs/data-graphs/graph_4.ttl", "r+").read() | safe}}`;
            }
        }
+       // set the text of textarea to file contents
+       $(this).parent().find("input, textarea").val("");
        parent_text_area.val(file_contents);
-
+       // update line numbers in textarea
        var line_number_id = $(this).parent().find(".line-numbers").attr("id");
        setLineNumbers(`#${line_number_id}`, file_contents);
-       // $("textarea").focus();
     });
 
-    $('.add-sample-graph').click(function(){
-       var parent_text_area = $(this).parent().find("textarea");
-       $(this).parent().find("input, textarea").val("");
-       var text_area_name = $(this).parent().find("textarea").attr("name");
-       if (text_area_name == "shacl-graph-text") {
-           var file_contents  = `{{ sample_shacl_graph | safe }}`;
-       } else {
-           var file_contents  = `{{ sample_data_graph | safe}}`;
-       }
-       parent_text_area.val(file_contents).trigger("input");
-    });
 
     function validateUploadForm(){
         // check if only one input provided for Data and SHACL graph
