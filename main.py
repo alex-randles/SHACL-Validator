@@ -5,8 +5,6 @@ import pyshacl
 # definition of web application
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "x633UE2xYRC"
-app.config['UPLOAD_FOLDER'] = "uploads"
-app.config['FILE_COUNT'] = 0
 
 
 @app.route('/', methods=["GET", "POST"])
