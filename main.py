@@ -86,7 +86,7 @@ def execute_shacl_shape():
             file_format = rdflib.util.guess_format(data_graph_uri)
             data_graph = load_rdflib_graph(data_graph_uri, file_format=file_format)
             print(data_graph_uri)
-            if not data_graph:
+            if isinstance(data_graph, str):
                 if "HTTP Error 404" in data_graph or "urlopen error" in data_graph:
                     error_banner = "Data File could not be retrieved!"
                 else:
