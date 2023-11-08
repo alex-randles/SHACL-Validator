@@ -47,6 +47,25 @@ def get_graph_format(graph_text):
     return "ttl"
 
 
+def execute_shacl_engine(data_graph, shacl_graph):
+    # run pyshacl on the graphs
+    print(f'Data graph loaded:\n {data_graph.serialize(format="ttl")}')
+    print(f'SHACL graph loaded:\n {shacl_graph.serialize(format="ttl")}')
+    try:
+        shacl_results = pyshacl.validate(data_graph, shacl_graph=shacl_graph)
+        conforms, results_graph, results_text = shacl_results
+        results_graph = results_graph.serialize(format="ttl")
+        results = {
+            "conforms": conforms,
+            "results_text": results_text,
+            "results_graph": results_graph,
+        }
+        print(f'SHACL validation results: \n {results}')
+        return results
+    except Exception as e:
+        error_message = str(e)
+        return {"error_message": error_message, "error_banner": "SHACL Validation Error!"}
+
 @app.route('/execute-shacl-shape', methods=["GET", "POST"])
 def execute_shacl_shape():
     if request.method == "POST":
@@ -103,22 +122,9 @@ def execute_shacl_shape():
                 return {"error_message": shacl_graph, "error_banner": error_banner}
         # validate graphs if successfully parsed  - else return None
         if shacl_graph and data_graph:
-            print(f'Data graph loaded:\n {data_graph.serialize(format="ttl")}')
-            print(f'SHACL graph loaded:\n {shacl_graph.serialize(format="ttl")}')
-            try:
-                shacl_results = pyshacl.validate(data_graph, shacl_graph=shacl_graph)
-                conforms, results_graph, results_text = shacl_results
-                results_graph = results_graph.serialize(format="ttl")
-                results = {
-                    "conforms": conforms,
-                    "results_text": results_text,
-                    "results_graph": results_graph,
-                }
-                print(f'SHACL validation results: \n {results}')
-                return results
-            except Exception as e:
-                error_message = str(e)
-                return {"error_message": error_message, "error_banner": "SHACL Validation Error!"}
+            shacl_results = execute_shacl_engine(data_graph, shacl_graph)
+            return shacl_results
+
 
 @app.errorhandler(Exception)
 def error(exception):
